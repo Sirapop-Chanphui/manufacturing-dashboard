@@ -1,10 +1,10 @@
-import { NavBar} from "./components/Websection";
-
+import { NavBar, HeroSection } from "./components/Websection";
 
 function App() {
   return (
     <>
       <NavBar />
+      <HeroSection />
     </>
   );
 }
