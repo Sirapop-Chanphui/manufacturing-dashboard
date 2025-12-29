@@ -75,3 +75,20 @@ export function HeroSection() {
   );
 }
 
+import google from "../assets/icons/icon-google_black.svg";
+import { Github, Linkedin } from 'lucide-react';
+export function Footer() {
+  return (
+    <div className="flex flex-col md:flex-row bg-brown-200 py-[40px] md:py-[60px] px-[16px] md:px-[120px] gap-[24px] justify-center md:justify-between items-center">
+      <div className="flex flex-row gap-[24px]">
+        <p className="text-body-1">Get in touch</p>
+        <Linkedin/>
+        <Github />
+        <img src={google} />
+      </div>
+      <button className="text-body-1 text-brown-600 hover:text-brown-400 hover:cursor-pointer underline">
+        Home page
+      </button>
+    </div>
+  );
+}

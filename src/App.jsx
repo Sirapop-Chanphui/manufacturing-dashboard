@@ -1,4 +1,4 @@
-import { NavBar, HeroSection } from "./components/Websection";
+import { NavBar, HeroSection, Footer } from "./components/Websection";
 import ArticleSection from "./components/ArticleSection";
 
 function App() {
@@ -7,6 +7,7 @@ function App() {
       <NavBar />
       <HeroSection />
       <ArticleSection />
+      <Footer />
     </>
   );
 }
