@@ -9,68 +9,194 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import BlogCard from "./BlogCard";
+
+const categories = [
+  "All",
+  "Production",
+  "Quality",
+  "Maintenance",
+  "Planning",
+  "Safety",
+  "Utility",
+];
+
+const blogInformation = [
+  {
+    id: 1,
+    image:
+      "https://images.unsplash.com/photo-1717386255773-1e3037c81788?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0",
+    category: "Production",
+    title: "Boosting Production Efficiency with Real-Time Dashboards",
+    description:
+      "Learn how live production dashboards help managers track machine output, reduce bottlenecks, and optimize factory efficiency in real time.",
+    author: "Olivia L.",
+    authorImage:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&auto=format&fit=crop&q=60",
+    date: "11 September 2024",
+    likes: 123,
+    content:
+      "Real-time production dashboards have revolutionized manufacturing operations by providing instant visibility into machine performance, output rates, and production bottlenecks. These advanced monitoring systems integrate IoT sensors, PLC data, and manufacturing execution systems (MES) to deliver comprehensive insights directly to managers' screens. With live updates every few seconds, production teams can immediately identify when machines are running below capacity, detect quality issues as they occur, and respond to disruptions before they escalate into costly downtime. Key metrics displayed include overall equipment effectiveness (OEE), throughput rates, cycle times, and real-time alerts for machine anomalies. By tracking these indicators continuously, manufacturers can optimize production schedules, reduce waste, and increase overall factory efficiency by up to 25%. The immediate feedback loop enables proactive decision-making, allowing managers to reallocate resources, adjust machine settings, and coordinate workflow in real-time rather than reacting to problems discovered hours or days later.",
+  },
+  {
+    id: 2,
+    image:
+      "https://images.unsplash.com/photo-1624957485560-47747511b32f?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0",
+    category: "Quality",
+    title: "Reducing Defects with Data-Driven Quality Dashboards",
+    description:
+      "Discover how quality control dashboards can detect production errors early, minimize scrap, and ensure products meet strict manufacturing standards.",
+    author: "Thomas T.",
+    authorImage:
+      "https://images.unsplash.com/photo-1556157382-97eda2d62296?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0",
+    content:
+      "Quality control dashboards leverage statistical process control (SPC) and advanced analytics to transform defect detection from reactive to predictive. These systems continuously monitor production lines, collecting data from vision systems, sensors, and quality inspection stations. When measurements deviate from specifications, the dashboard immediately flags anomalies, enabling quality engineers to investigate and resolve issues before defective products reach customers. The real-time tracking of defect rates, first-pass yield, and rework percentages helps identify problematic production lines or processes that require immediate attention. Historical trend analysis reveals patterns that might indicate equipment wear, material variations, or operator errors. By setting automated alerts based on statistical thresholds, manufacturers can respond to quality issues within minutes rather than discovering them during final inspection or, worse, through customer complaints. This proactive approach significantly reduces scrap rates, minimizes rework costs, and ensures consistent product quality that meets or exceeds industry standards and customer expectations.",
+  },
+  {
+    id: 3,
+    image:
+      "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0",
+    category: "Maintenance",
+    title: "Predictive Maintenance for Minimizing Downtime",
+    description:
+      "Explore how predictive maintenance dashboards use sensor data to anticipate equipment failures and prevent costly downtime in manufacturing plants.",
+    author: "Thompson P.",
+    authorImage:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&auto=format&fit=crop&q=60",
+    content:
+      "Predictive maintenance represents a paradigm shift from traditional reactive or scheduled maintenance to data-driven, condition-based strategies. Modern manufacturing equipment generates vast amounts of sensor data including temperature, vibration, pressure, and electrical current measurements. Predictive maintenance dashboards use machine learning algorithms and statistical models to analyze this continuous stream of data, identifying patterns that precede equipment failures. By detecting subtle anomalies weeks or even months before a breakdown, maintenance teams can schedule repairs during planned downtime rather than reacting to unexpected failures. The dashboard displays equipment health scores, remaining useful life predictions, and prioritized maintenance recommendations based on failure probability and criticality. This approach extends equipment lifespan, reduces maintenance costs by up to 40%, and eliminates the productivity losses associated with unplanned downtime. Advanced systems can even integrate with maintenance management software to automatically generate work orders and order replacement parts before failures occur, ensuring that maintenance activities are both timely and efficient.",
+  },
+  {
+    id: 4,
+    image:
+      "https://images.unsplash.com/photo-1754152365074-b1014729ce37?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0",
+    category: "Planning",
+    title: "Optimizing Production Planning with Smart Dashboards",
+    description:
+      "Learn how smart planning dashboards provide real-time insights into shop floor schedules, resource allocation, and workflow optimization for better decision-making.",
+    author: "Thompson P.",
+    authorImage:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&auto=format&fit=crop&q=60",
+    content:
+      "Smart planning dashboards integrate production schedules, resource availability, and real-time shop floor status to create dynamic, optimized manufacturing plans. These intelligent systems continuously monitor machine capacity, material inventory, workforce availability, and ongoing production progress. When deviations occur—such as a machine breakdown, material shortage, or order priority change—the dashboard automatically recalculates optimal schedules and resource allocations. Visual representations of production timelines, resource utilization, and workflow dependencies help planners quickly identify bottlenecks, underutilized resources, and scheduling conflicts. The system can suggest alternative production sequences, recommend resource reallocation, and highlight opportunities to improve overall equipment utilization. By providing real-time visibility into schedule adherence and performance metrics, managers can make informed decisions about accepting rush orders, managing overtime, or adjusting delivery commitments. This agile planning approach reduces lead times, improves on-time delivery performance, and maximizes factory throughput while maintaining flexibility to adapt to changing market demands and operational conditions.",
+  },
+  {
+    id: 5,
+    image:
+      "https://images.unsplash.com/photo-1529704193007-e8c78f0f46f9?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0",
+    category: "Safety",
+    title: "Monitoring Factory Safety Through Dashboards",
+    description:
+      "Understand how safety dashboards track compliance, monitor hazards, and reduce workplace accidents in manufacturing environments.",
+    author: "Thompson P.",
+    authorImage:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&auto=format&fit=crop&q=60",
+    content:
+      "Safety dashboards provide comprehensive monitoring of workplace safety metrics, compliance status, and hazard detection across manufacturing facilities. These systems integrate data from various sources including incident reports, safety inspections, environmental sensors, and equipment monitoring systems. Real-time displays show current safety performance indicators such as days without accidents, near-miss incidents, compliance scores, and active hazard alerts. The dashboard tracks exposure to harmful substances, noise levels, temperature extremes, and other environmental factors that could impact worker health. Compliance monitoring ensures that safety procedures are being followed, required training is current, and personal protective equipment (PPE) usage is appropriate for each work area. When hazardous conditions are detected—such as elevated gas levels, excessive noise, or equipment malfunctions—the system immediately alerts safety personnel and can automatically trigger protective measures. Trend analysis helps identify patterns in safety incidents, enabling proactive interventions to address root causes before accidents occur. This data-driven approach to safety management creates a culture of prevention, reduces workplace injuries by up to 60%, and ensures regulatory compliance while protecting the most valuable asset: the workforce.",
+  },
+  {
+    id: 6,
+    image:
+      "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0",
+    category: "Utility",
+    title: "Optimizing Utility Systems in Modern Factories",
+    description:
+      "A deep dive into utility management, including energy, water, and waste systems in industrial environments, showing how efficient monitoring and automation reduce costs and improve sustainability.",
+    author: "Thompson P.",
+    authorImage:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&auto=format&fit=crop&q=60",
+    content:
+      "Utility management dashboards provide comprehensive monitoring and optimization of energy, water, waste, and other utility systems in manufacturing facilities. These integrated systems track consumption patterns, costs, and efficiency metrics across the entire plant, from individual machines to building-wide systems. Real-time energy monitoring identifies peak demand periods, inefficient equipment operation, and opportunities for load shifting to reduce electricity costs. Water usage tracking detects leaks, monitors quality, and optimizes consumption across production processes, cooling systems, and sanitation. Waste management modules track generation rates, recycling percentages, and disposal costs, enabling data-driven decisions about waste reduction initiatives. The dashboard provides actionable insights such as identifying equipment that consumes excessive utilities, recommending optimal operating schedules to minimize peak demand charges, and suggesting maintenance activities to improve efficiency. Automated alerts notify facility managers of anomalies like sudden consumption spikes, equipment running outside normal parameters, or approaching regulatory limits. By continuously optimizing utility consumption, manufacturers can reduce operational costs by 15-30%, improve sustainability metrics, and ensure compliance with environmental regulations while maintaining production requirements. Advanced analytics can even predict future utility needs and costs based on production forecasts, enabling better budget planning and resource allocation.",
+  },
+];
 
 function ArticleSection() {
   return (
-    <div className="flex flex-col md:pt-[60px] md:pb-[120px] md:px-[120px]">
-      <p className="text-headline-3 p-[16px] md:p-0 md:pb-[32px] text-brown-600">
-        Latest articles
-      </p>
+    <div className="flex flex-col items-center 2xl:pt-[60px] pb-[80px] 2xl:pb-[120px] 2xl:px-[120px] bg-neutral-100">
+      <div className="flex flex-col items-start w-full">
+        <p className="text-headline-3 p-[16px] 2xl:p-0 2xl:pb-[32px] text-neutral-600">
+          Latest articles
+        </p>
+        <div className="w-full flex flex-col 2xl:flex-row 2xl:justify-between p-[16px] gap-[16px] bg-neutral-200 rounded-[16px]">
+          {/*catagory for destop */}
+          <div className="hidden 2xl:flex 2xl:flex-row justify-space-between gap-[8px]">
+            {categories.map((category) => {
+              return (
+                <p
+                  key={category}
+                  className="py-[12px] px-[20px] text-neutral-400 hover:text-neutral-500 hover:bg-neutral-300 hover:rounded-[8px] hover:cursor-pointer"
+                >
+                  {category}
+                </p>
+              );
+            })}
+          </div>
 
-      <div className="flex flex-col md:flex-row md:justify-between p-[16px] gap-[16px] bg-brown-200 rounded-[16px]">
-        {/*catagory for destop */}
-        <div className="hidden md:flex md:flex-row justify-space-between gap-[8px]">
-          <p className="py-[12px] px-[20px] text-brown-400 hover:text-brown-500 hover:bg-brown-300 hover:rounded-[8px] hover:">
-            Awards
-          </p>
-          <p className="py-[12px] px-[20px] text-brown-400 hover:text-brown-500 hover:bg-brown-300 hover:rounded-[8px]">
-            Gamba
-          </p>
-          <p className="py-[12px] px-[20px] text-brown-400 hover:text-brown-500 hover:bg-brown-300 hover:rounded-[8px]">
-            Audit
-          </p>
-          <p className="py-[12px] px-[20px] text-brown-400 hover:text-brown-500 hover:bg-brown-300 hover:rounded-[8px]">
-            Issue
-          </p>
-        </div>
+          {/* wrapper search input + icon */}
+          <div className="relative w-full 2xl:w-[360px]">
+            <input
+              type="text"
+              placeholder="Search"
+              className="text-body-1 border border-neutral-300 text-neutral-400  placeholder:text-neutral-400 bg-white rounded-[8px] pl-[12px] pr-[40px] py-[12px] gap-[4px] focus:outline-none focus:ring-1 focus:ring-neutral-400 w-full 2xl:w-[360px]"
+            />
+            {/* icon 1*/}
+            <Search
+              className="absolute right-3 top-1/2 -translate-y-1/2  w-[22px]  h-[22px] text-neutral-600"
+              strokeWidth={1}
+            />
+          </div>
 
-        {/* wrapper search input + icon */}
-        <div className="relative w-full md:w-[360px]">
-          <input
-            type="text"
-            placeholder="Search"
-            className="text-body-1 border border-brown-300 text-brown-400  placeholder:text-brown-400 bg-white rounded-[8px] pl-[12px] pr-[40px] py-[12px] gap-[4px] focus:outline-none focus:ring-1 focus:ring-brown-400 w-full md:w-[360px]"
-          />
-          {/* icon 1*/}
-          <Search
-            className="absolute right-3 top-1/2 -translate-y-1/2  w-[24px]  h-[24px] text-brown-400"
-            strokeWidth={1}
-          />
-        </div>
+          {/*catagory for mobile */}
+          <div className="flex flex-col 2xl:hidden text-body-1">
+            <p className=" text-neutral-400"> Category </p>
+            <Select>
+              <SelectTrigger className=" !h-auto w-full  border border-neutral-300 text-neutral-400  bg-white rounded-[8px] pl-[16px] pr-[12px] py-[12px] gap-[4px] focus:outline-none focus:ring-1 focus:ring-neutral-400 ">
+                <SelectValue
+                  placeholder="All"
+                  className="text-neutral-400  data-[placeholder]:text-neutral-400"
+                />
+              </SelectTrigger>
 
-        {/*catagory for mobile */}
-        <div className="flex flex-col md:hidden">
-          <p className="text-body-1 text-brown-400"> Category </p>
-          <Select>
-            <SelectTrigger className=" !h-auto w-full text-body-1 border border-brown-300 text-brown-400  bg-white rounded-[8px] pl-[16px] pr-[12px] py-[12px] gap-[4px] focus:outline-none focus:ring-1 focus:ring-brown-400 ">
-              <SelectValue
-                placeholder="Highlight"
-                className="text-brown-400 text-body-1 data-[placeholder]:text-brown-400"
-              />
-            </SelectTrigger>
-
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Category</SelectLabel>
-                <SelectItem value="Awards">Awards</SelectItem>
-                <SelectItem value="gamba">Gamba</SelectItem>
-                <SelectItem value="audit">Audit</SelectItem>
-                <SelectItem value="minor problem">Issue</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+              <SelectContent position="popper">
+                <SelectGroup>
+                  <SelectLabel className="text-body-1 text-neutral-600">
+                    Category
+                  </SelectLabel>
+                  {categories.map((category) => (
+                    <SelectItem
+                      key={category.toLowerCase()}
+                      value={category.toLowerCase()}
+                      className="text-body-1 text-neutral-400"
+                    >
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </div>
+
+      {/*blog post */}
+      <div className="flex flex-col 2xl:grid 2xl:grid-cols-2 2xl:justify-items-stretch pt-[24px] px-[16px] 2xl:px-0 pb-[80px] gap-[48px] 2xl:gap-[20px]">
+        {blogInformation.map((blog) => (
+          <BlogCard
+            key={blog.id}
+            image={blog.image}
+            category={blog.category}
+            title={blog.title}
+            description={blog.description}
+            author={blog.author}
+            authorImage={blog.authorImage}
+            date={blog.date}
+          />
+        ))}
+      </div>
+
+      <button className="text-body-1 text-neutral-600 underline hover:text-neutral-400 hover:cursor-pointer w-fit h-fit">
+        View more
+      </button>
     </div>
   );
 }
