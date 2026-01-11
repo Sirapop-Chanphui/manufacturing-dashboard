@@ -10,12 +10,13 @@ const BlogCard = ({
   return (
     <div className="flex flex-col gap-[16px]">
       {/*1.image section*/}
-      <a href="#" className="flex justify-center">
+      <a href="#" className="flex justify-center select-none rounded-[16px] overflow-hidden relative">
         <img
           src={image}
           alt="blog image"
-          className="w-full h-[212px] 2xl:h-[360px] rounded-[16px] object-cover"
+          className="w-full h-[212px] 2xl:h-[360px] object-cover"
         />
+        <div className="absolute inset-0 bg-[#87859b40]"></div>
       </a>
       {/*2.buttom section*/}
       <div className="flex flex-col gap-[16px]">
