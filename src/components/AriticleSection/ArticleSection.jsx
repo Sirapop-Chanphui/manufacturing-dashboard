@@ -52,7 +52,7 @@ function ArticleSection() {
 
   return (
     <div className="flex flex-col items-center 2xl:pt-[60px] pb-[80px] 2xl:pb-[120px] 2xl:px-[120px] bg-neutral-100">
-      <div className="flex flex-col items-start w-full select-none">
+      <div className="flex flex-col items-start w-full caret-transparent">
         <p className="text-headline-3 p-[16px] 2xl:p-0 2xl:pb-[32px] text-neutral-600">
           Latest articles
         </p>

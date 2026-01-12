@@ -1,14 +1,16 @@
-import { NavBar, HeroSection, Footer } from "./components/Websection";
+import { HeroSection, Footer } from "./components/Websection";
 import ArticleSection from "./components/AriticleSection/ArticleSection";
-import BlogCard from "./components/AriticleSection/BlogCard";
+import Navbar from "./components/Navbar/Navbar";
 
 function App() {
   return (
     <>
-      <NavBar />
-      <HeroSection />
-      <ArticleSection />
-      <Footer />
+      <Navbar />
+      <main className="pt-[48px] 2xl:pt-[76px]">
+        <HeroSection />
+        <ArticleSection />
+        <Footer />
+      </main>
     </>
   );
 }

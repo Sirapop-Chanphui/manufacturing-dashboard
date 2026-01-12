@@ -1,31 +1,3 @@
-import logohh from "../assets/icons/logo-hh.svg";
-import hamburger from "../assets/icons/icon-hamburger.svg";
-import Button from "../components/common/Button";
-
-
-export function NavBar() {
-  return (
-    <nav className="flex flex-row w-full  justify-between items-center bg-neutral-100 py-[12px] 2xl:py-[16px] px-[24px] 2xl:px-[120px] border-b border-neutral-300">
-      <div className="w-full max-w-[375px] 2xl:max-w-[1440px] mx-auto flex flex-row justify-between items-center">
-        <img
-          src={logohh}
-          alt="Logo hh"
-          className="w-[24px] 2xl:w-[44px] h-[24px] 2xl:h-[44px]"
-        />
-        <img
-          src={hamburger}
-          alt="Logo hh"
-          className="w-[18px] h-[12px] 2xl:hidden"
-        />
-        <div className="hidden 2xl:flex flex-row gap-[8px]">
-          <Button buttonText="Log in" buttonStyle="secondary" />
-          <Button buttonText="Sign up" buttonStyle="primary" />
-        </div>
-      </div>
-    </nav>
-  );
-}
-
 import men from "../assets/img/men-and-cat.jpg";
 
 export function HeroSection() {
