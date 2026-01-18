@@ -1,17 +1,17 @@
-import { HeroSection, Footer } from "./components/Websection";
-import ArticleSection from "./components/AriticleSection/ArticleSection";
-import Navbar from "./components/Navbar/Navbar";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import ArticleDetailPage from "./pages/ArticleDetailPage";
+import { Toaster } from "sonner";
 
 function App() {
   return (
-    <>
-      <Navbar />
-      <main className="pt-[48px] 2xl:pt-[76px]">
-        <HeroSection />
-        <ArticleSection />
-        <Footer />
-      </main>
-    </>
+    <BrowserRouter>
+    <Toaster position="bottom-right" />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/article/:id" element={<ArticleDetailPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
