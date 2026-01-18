@@ -71,7 +71,7 @@ const ArticleDetail = ({ articleId }) => {
             <img
                 src={article.image}
                 alt={article.title}
-                className="w-full 2xl:h-[587px] h-[184px] object-cover"
+                className="w-full 2xl:h-[587px] 2xl:rounded-[16px] h-[184px] object-cover"
             />
 
             <div className="2xl:flex 2xl:flex-row 2xl:justify-between 2xl:gap-[80px] px-[16px] pt-[24px]">
