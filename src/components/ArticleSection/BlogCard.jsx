@@ -22,7 +22,7 @@ const BlogCard = ({
           alt={title}
           className="w-full h-[212px] 2xl:h-[360px] object-cover"
         />
-        <div className="absolute inset-0 bg-[#87859b40]"></div>
+        <div className="absolute inset-0 bg-[#87859b40] hover:opacity-50"></div>
       </Link>
       {/*2.buttom section*/}
       <div className="flex flex-col gap-[16px]">
