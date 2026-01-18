@@ -11,9 +11,10 @@ import { toast } from "sonner"
 
 const ArticleDetail = ({ articleId }) => {
     const [article, setArticle] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showLoginDialog, setShowLoginDialog] = useState(false)
+
     const isLoggedIn = false
 
     const handleLike = () => {
@@ -41,6 +42,11 @@ const ArticleDetail = ({ articleId }) => {
         }
     };
 
+    useEffect(() => {
+        if (!isLoading) {
+            window.scrollTo(0, 0);
+        }
+    }, [isLoading]);
 
 
 
@@ -62,22 +68,25 @@ const ArticleDetail = ({ articleId }) => {
         fetchArticle();
     }, [articleId]);
 
-    if (isLoading) return <p>Loading article...</p>;
-    if (error) return <p>{error}</p>;
-    if (!article) return null;
+    if (isLoading) return <p className="py-[320px] 2xl:py-[500px] text-center">Loading article...</p>;
+    if (error) return <p className="py-[320px] 2xl:py-[500px] text-center">{error}</p>;
 
     return (
         <article className="flex flex-col w-full 2xl:py-[60px] 2xl:px-[120px] 2xl:mt-[80px] py-[49px]">
-            <img
-                src={article.image}
-                alt={article.title}
-                className="w-full 2xl:h-[587px] 2xl:rounded-[16px] h-[184px] object-cover"
-            />
 
-            <div className="2xl:flex 2xl:flex-row 2xl:justify-between 2xl:gap-[80px] px-[16px] pt-[24px]">
+            <div className="w-full 2xl:h-[587px] h-[184px] 2xl:rounded-[16px] overflow-hidden relative">
+                <img
+                    src={article.image}
+                    alt={article.title}
+                    className="w-full 2xl:h-[587px] h-[184px] object-cover"
+                />
+                <div className="absolute inset-0 bg-[#87859b40] opacity-10 "></div>
+            </div>
+
+            <div className="2xl:flex 2xl:flex-row 2xl:justify-between 2xl:gap-[80px] 2xl:px-0 px-[16px] pt-[24px]">
 
                 {/* LEFT */}
-                <div className="flex flex-col 2xl:w-[815px] gap-[24px]">
+                <div className="flex flex-col 2xl:w-full gap-[24px]">
                     <ArticleHeader article={article} />
                     <ArticleContent content={article.content} />
 
