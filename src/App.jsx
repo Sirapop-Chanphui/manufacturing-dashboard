@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar/Navbar";
 import SignUpPage from "./pages/SignUpPage";
 import RegistrationSuccess from "./pages/RegistrationSuccessPage";
 import LoginPage from "./pages/LoginPage";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
     <Toaster position="bottom-right" richColors />
     <Navbar/>
       <Routes>
+      <Route path="*" element={<NotFound />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/signup/success" element={<RegistrationSuccess />} />
