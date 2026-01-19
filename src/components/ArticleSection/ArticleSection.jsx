@@ -45,7 +45,7 @@ function ArticleSection() {
           />
 
           {/* wrapper search input + icon */}
-          <div ref={searchRef} className="relative w-full 2xl:w-[360px]">
+          <div ref={searchRef} className="relative w-full 2xl:w-[360px] caret-transparent">
             <input
               type="text"
               placeholder="Search"
