@@ -23,7 +23,7 @@ function Navbar() {
         </div>
       </nav>
 
-      {menuOpen && <MobileMenu />}
+      {menuOpen && <MobileMenu onClose={() => setMenuOpen(false)}/>}
     </>
   );
 }
