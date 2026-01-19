@@ -29,18 +29,10 @@ function ArticleSection() {
 
   useClickOutside(searchRef, () => setShowSuggestion(false));
 
-  const visiblePosts =
-  selectedCategory === "Highlight"
-    ? filteredPosts
-    : filteredPosts.filter(
-        (post) => post.category === selectedCategory
-      );
-
-
   return (
     <div className="flex flex-col items-center 2xl:pt-[60px] pb-[80px] 2xl:pb-[120px] 2xl:px-[120px] bg-neutral-100">
       <div className="flex flex-col items-start w-full">
-        <p className="text-headline-3 p-[16px] 2xl:p-0 2xl:pb-[32px] text-neutral-600">
+        <p className="text-headline-3 p-[16px] 2xl:p-0 2xl:pb-[32px] text-neutral-600 caret-transparent">
           Latest articles
         </p>
 
@@ -89,9 +81,9 @@ function ArticleSection() {
       </div>
 
       {/*blog post */}
-      <div className="flex flex-col 2xl:grid 2xl:grid-cols-2 2xl:justify-items-stretch pt-[24px] px-[16px] 2xl:px-0 gap-[48px] 2xl:gap-[20px]">
+      <div className="flex flex-col 2xl:grid 2xl:grid-cols-2 2xl:justify-items-stretch pt-[24px] px-[16px] 2xl:px-0 gap-[48px] 2xl:gap-[20px] caret-transparent">
         <>
-          {visiblePosts.map((blog) => (
+          {filteredPosts.map((blog) => (
             <BlogCard
               key={blog.id}
               id={blog.id}
@@ -112,18 +104,18 @@ function ArticleSection() {
             </div>
           )}
 
-          {hasMore && !search && !isLoading && visiblePosts.length > 0 &&(
+          {hasMore && !search && !isLoading && filteredPosts.length > 0 &&(
             <div className="pt-[80px] col-span-full flex justify-center">
               <button
                 onClick={loadMore}
-                className="text-body-1 text-neutral-600 underline hover:text-neutral-400"
+                className="text-body-1 text-neutral-600 underline hover:text-neutral-400 hover:cursor-pointer"
               >
                 View more
               </button>
             </div>
           )}
 
-          {search && !isLoading && visiblePosts.length === 0 && (
+          {search && !isLoading && filteredPosts.length === 0 && (
             <p className="text-body-1 text-neutral-400 col-span-full text-center pt-[40px] pb-[450px]">
               No articles match your search
             </p>
