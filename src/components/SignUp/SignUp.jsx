@@ -21,7 +21,7 @@ function SignUpForm() {
                 onSubmit={handleSubmit(onSubmit)}
                 className="flex flex-col w-full 2xl:w-[798px] bg-neutral-200 rounded-[16px] py-[40px] 2xl:py-[60px] 2xl:px-[120px] px-[16px] gap-[24px] 2xl:gap-[28px]"
             >
-                <h1 className="text-headline-2 text-center">
+                <h1 className="text-headline-2 text-center caret-transparent">
                     Sign up
                 </h1>
 
