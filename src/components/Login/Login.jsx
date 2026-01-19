@@ -60,6 +60,7 @@ function Login() {
                 <InputField
                     label="Email"
                     value={email}
+                    placeholder="Email"
                     error={hasError}
                     onChange={(e) => { setEmail(e.target.value); }}
                 />
@@ -67,6 +68,7 @@ function Login() {
                 <InputField
                     label="Password"
                     type="password"
+                    placeholder="Password"
                     error={hasError}
                     value={password}
                     onChange={(e) => { setPassword(e.target.value); }}
