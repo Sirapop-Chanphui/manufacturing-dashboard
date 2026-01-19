@@ -22,7 +22,7 @@ export function useArticles( selectedCategory ) {
           params: {
             page: pageToFetch,
             limit: LIMIT,
-            ...(selectedCategory && { selectedCategory }),
+            ...(selectedCategory !== "Highlight" && { category: selectedCategory, }),
           },
         });
 

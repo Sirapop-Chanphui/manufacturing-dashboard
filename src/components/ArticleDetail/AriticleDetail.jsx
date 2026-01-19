@@ -31,12 +31,32 @@ const ArticleDetail = ({ articleId }) => {
         }
     }
 
-
-
     const handleCopy = async () => {
         try {
             await navigator.clipboard.writeText(window.location.href);
-            toast.success("Link copied to clipboard");
+            toast.custom((t) => (
+                <div className="flex w-fit items-start gap-[12px] rounded-[8px] bg-brand-green p-4 shadow-lg relative">
+
+
+                    <div className="flex flex-col gap-1">
+                        <p className="text-headline-4 text-white">
+                            Copied!
+                        </p>
+                        <p className="text-body-2 text-white">
+                            Thsi article has been copied to your clipboard.
+                        </p>
+                    </div>
+                    <button
+                        onClick={() => toast.dismiss(t)}
+                        className="absolute top-4 right-6 text-white opacity-80 hover:opacity-100"
+                        aria-label="Close"
+                    >
+                        ✕
+                    </button>
+                </div>
+            ), {
+                duration: 5000, 
+            });
         } catch (err) {
             toast.error("Failed to copy link");
         }
@@ -98,7 +118,7 @@ const ArticleDetail = ({ articleId }) => {
                         />
                     </div>
 
-                    <ArticleCommentSection onSubmit={handleComment} />
+                    <ArticleCommentSection onClick={handleComment} />
                 </div>
 
                 {/* RIGHT */}

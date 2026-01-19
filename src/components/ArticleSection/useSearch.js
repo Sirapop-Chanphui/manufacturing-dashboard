@@ -18,9 +18,7 @@ export function useSearch(posts, delay = 1000) {
     ? posts.filter(
         (post) =>
           post.title?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-          post.description
-            ?.toLowerCase()
-            .includes(debouncedSearch.toLowerCase())
+          post.description?.toLowerCase().includes(debouncedSearch.toLowerCase())
       )
     : posts;
 
