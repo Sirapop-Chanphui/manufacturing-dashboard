@@ -5,16 +5,18 @@ import { Toaster } from "sonner";
 import Navbar from "./components/Navbar/Navbar";
 import SignUpPage from "./pages/SignUpPage";
 import RegistrationSuccess from "./pages/RegistrationSuccessPage";
+import LoginPage from "./pages/LoginPage";
 
 function App() {
   return (
     <BrowserRouter>
-    <Toaster position="bottom-right" />
+    <Toaster position="bottom-right" richColors />
     <Navbar/>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/signup/success" element={<RegistrationSuccess />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/article/:id" element={<ArticleDetailPage />} />
 
       </Routes>
