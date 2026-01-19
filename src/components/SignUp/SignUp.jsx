@@ -1,4 +1,4 @@
-import InputField from "./InputField";
+import InputField from "../common/InputField";
 import { useSignUpForm } from "./useSignUpForm";
 import { Link } from "react-router-dom";
 import Button from "../common/Button";
