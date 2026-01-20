@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const isLoggedIn = true;
 
   return (
     <>
@@ -23,11 +24,11 @@ function Navbar() {
 
           <HamburgerButton onClick={() => setMenuOpen((prev) => !prev)} />
 
-          <DesktopMenu />
+          <DesktopMenu isLoggedIn={isLoggedIn} />
         </div>
       </nav>
 
-      {menuOpen && <MobileMenu onClose={() => setMenuOpen(false)} />}
+      {menuOpen && <MobileMenu isLoggedIn={isLoggedIn} onClose={() => setMenuOpen(false)} />}
     </>
   );
 }

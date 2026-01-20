@@ -108,7 +108,7 @@ const ArticleDetail = ({ articleId }) => {
                 {/* LEFT */}
                 <div className="flex flex-col 2xl:w-full gap-[24px]">
                     <ArticleHeader article={article} />
-                    <ArticleContent content={article.content} />
+                    <ArticleContent content={article.content} />แ
 
                     <div className="-mx-[16px] 2xl:m-0">
                         <ArticleActions
