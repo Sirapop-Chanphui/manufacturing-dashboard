@@ -5,6 +5,7 @@ import ArticleContent from "./ArticleContent";
 import AuthorCard from "./AuthorCard";
 import ArticleActions from "./ArticleActions";
 import ArticleCommentSection from "./ArticleCommentSection";
+import ArticleDetailSkeleton from "./ArticleDetailSkeleton";
 
 import LoginRequiredDialog from "../common/LoginRequiredDialog"
 import { toast } from "sonner"
@@ -20,7 +21,7 @@ const ArticleDetail = ({ articleId }) => {
     const handleLike = () => {
         if (!isLoggedIn) {
             setShowLoginDialog(true)
-            return
+            return 
         }
     }
 
@@ -36,7 +37,6 @@ const ArticleDetail = ({ articleId }) => {
             await navigator.clipboard.writeText(window.location.href);
             toast.custom((t) => (
                 <div className="flex w-fit items-start gap-[12px] rounded-[8px] bg-brand-green p-4 shadow-lg relative">
-
 
                     <div className="flex flex-col gap-1">
                         <p className="text-headline-4 text-white">
@@ -69,7 +69,6 @@ const ArticleDetail = ({ articleId }) => {
     }, [isLoading]);
 
 
-
     useEffect(() => {
         const fetchArticle = async () => {
             try {
@@ -88,7 +87,7 @@ const ArticleDetail = ({ articleId }) => {
         fetchArticle();
     }, [articleId]);
 
-    if (isLoading) return <p className="py-[320px] 2xl:py-[500px] text-center">Loading article...</p>;
+    if (isLoading) return <ArticleDetailSkeleton />;
     if (error) return <p className="py-[320px] 2xl:py-[500px] text-center">{error}</p>;
 
     return (

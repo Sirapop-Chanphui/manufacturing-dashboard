@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const isLoggedIn = true;
+  const isLoggedIn = false;
 
   return (
     <>
