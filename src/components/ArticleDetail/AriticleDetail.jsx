@@ -30,7 +30,7 @@ const ArticleDetail = ({ articleId }) => {
             setShowLoginDialog(true)
             return
         }
-    }
+    } 
 
     const handleCopy = async () => {
         try {

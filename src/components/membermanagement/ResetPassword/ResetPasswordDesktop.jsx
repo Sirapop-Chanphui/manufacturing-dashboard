@@ -1,0 +1,95 @@
+import { UserRound } from 'lucide-react';
+import { RotateCw } from 'lucide-react';
+import man from "@/assets/img/men-and-cat.jpg"
+import InputField from "@/components/common/InputField";
+import Button from "@/components/common/Button";
+import { useNavigate } from "react-router-dom";
+
+function ResetPasswordDesktop({ values, onChange, onSubmit}) {
+    const navigate = useNavigate();
+
+    return (
+        <div className="hidden 2xl:flex flex-col w-full h-screen pt-[132px]  bg-neutral-100  items-center">
+            <div>
+
+                {/*Tag show your profile */}
+                <div className="flex flex-row items-center px-[16px] py-[24px] gap-[12px]">
+                    <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
+                        <img
+                            src={man}
+                            alt="avatar"
+                            className="w-full h-full object-cover"
+                        />
+                    </div>
+
+                    <div className="flex flex-row items-center gap-[16px]">
+                        <span className="w-fit text-headline-4 text-neutral-400">Moodeng ja</span>
+                        <div className="flex h-[28px] w-px bg-neutral-300 "></div>
+                        <span className="w-fit text-headline-4 text-neutral-600">Reset password</span>
+                    </div>
+
+                </div>
+
+                <div className="2xl:flex 2xl:flex-row 2xl:gap-[48px]">
+                    {/*navigate to profile, reset password */}
+                    <div className="hidden 2xl:flex flex-col w-[196px] rounded-[12px] text-neutral-500 py-2 ">
+                        <button
+                            onClick={() => { navigate("/login/profile") }}
+                            className="flex w-full items-center gap-3 px-4 py-2 transition-all duration-200 ease-out hover:translate-x-1 cursor-pointer"
+                        >
+                            <UserRound className="w-4 h-4 text-neutral-400" />
+                            <span>Profile</span>
+                        </button>
+
+                        <button
+                            onClick={() => { navigate("/login/reset-password") }}
+                            className="flex w-full items-center gap-3 px-4 py-2 transition-all duration-200 ease-out hover:translate-x-1 cursor-pointer"
+                        >
+                            <RotateCw className="w-4 h-4 text-neutral-400" />
+                            <span>Reset password</span>
+                        </button>
+                    </div>
+                    {/* Password section */}
+                    <div className="flex flex-col bg-neutral-200 pt-[24px] pr-[16px] pb-[40px] pl-[16px] gap-[24px] 2xl:rounded-[16px] 2xl:w-[550px]">
+                        <form onSubmit={onSubmit} className="flex flex-col gap-[24px]">
+                            <InputField
+                                label="Current password"
+                                name="currentPassword"
+                                type="password"
+                                placeholder="Current password"
+                                value={values.currentPassword}
+                                onChange={onChange}
+                            />
+
+                            <InputField
+                                label="New password"
+                                name="newPassword"
+                                type="password"
+                                placeholder="New password"
+                                value={values.newPassword}
+                                onChange={onChange}
+                            />
+
+                            <InputField
+                                label="Confirm new password"
+                                name="confirmPassword"
+                                type="password"
+                                placeholder="Confirm new password"
+                                value={values.confirmPassword}
+                                onChange={onChange}
+                            />
+
+                            <Button
+                                type="submit"
+                                buttonText="Reset password"
+                                buttonStyle="primary"
+                                className="w-fit"
+                            />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+export default ResetPasswordDesktop
