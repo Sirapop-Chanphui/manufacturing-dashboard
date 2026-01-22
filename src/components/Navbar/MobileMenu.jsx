@@ -5,19 +5,53 @@ import { Bell } from 'lucide-react';
 import { UserRound } from 'lucide-react';
 import { RotateCw } from 'lucide-react';
 import { LogOut } from 'lucide-react';
+import logohh from "../../assets/icons/logo-hh.svg";
+import { Link } from "react-router-dom";
+import { useRef, useState } from "react";
+import { useClickOutside } from "@/utils/useClickOutside";
+import { notifications } from "@/data/notifications";
+import { ExternalLink } from 'lucide-react';
 
-function MobileMenu({ onClose, isLoggedIn }) {
+import hamburger from "../../assets/icons/icon-hamburger.svg";
+import NotificationCard from "./NotificationCard";
+
+
+function MobileMenu({ isLoggedIn, open, onToggle, onClose, isAdmin }) {
   const navigate = useNavigate();
+  const ref = useRef(null);
+  const [isOpenNoti, setIsOpenNoti] = useState(false)
 
   const handleNavigate = (path) => {
     navigate(path);
     onClose();
   };
 
+  useClickOutside(ref, () => {
+    if (open) onClose();
+  });
+
   return (
-    <>
-      {isLoggedIn ? (
-        <div className="fixed top-[49px] w-full bg-neutral-100 z-40 flex flex-col gap-[24px] p-[24px]  border-b border-neutral-300 2xl:hidden">
+    <div ref={ref} className="2xl:hidden w-full flex flex-row justify-between items-center">
+      <div className="w-full flex flex-row justify-between items-center">
+        <Link to="/">
+          <img
+            src={logohh}
+            alt="Logo hh"
+            className="w-[24px] 2xl:w-[44px] h-[24px] 2xl:h-[44px] cursor-pointer"
+          />
+        </Link>
+
+        <button className="2xl:hidden " onClick={onToggle}>
+          <img
+            src={hamburger}
+            alt="hamburger button"
+            className="w-[18px] h-[12px] hover:cursor-pointer"
+          />
+        </button>
+
+      </div>
+      {isLoggedIn && open ? (
+        <div className=" fixed top-[49px] -mx-[24px] w-full bg-neutral-100 z-40 flex flex-col gap-[24px] p-[24px]  border-b border-neutral-300 2xl:hidden ">
           <div className="flex flex-row justify-between items-center ">
 
             <div className="flex flex-row items-center gap-[8px]">
@@ -29,35 +63,45 @@ function MobileMenu({ onClose, isLoggedIn }) {
               <span className="text-body-1 text-neutral-500">Moodang</span>
             </div>
             <div className="relative flex justify-center items-center h-[48px] w-[48px] bg-white border border-neutral-200 rounded-full cursor-pointer">
-              <Bell className="text-neutral-400 stroke-[1px]" />
-              <div className="h-[8px] w-[8px] bg-brand-red absolute top-1 right-0 rounded-full"></div>
+              <div>
+                <Bell className="text-neutral-400 stroke-[1px]" onClick={() => setIsOpenNoti((prev) => !prev)} />
+                {!isOpenNoti && <div className="h-[8px] w-[8px] bg-brand-red absolute top-1 right-0 rounded-full"></div>}
+                {isOpenNoti && (
+                  <div className="absolute flex flex-col -right-2 mt-[20px] w-[343px] rounded-[12px] text-neutral-500 bg-neutral-100 border shadow-lg p-[16px] gap-[16px] z-50">
+                    {notifications.map((notification) => (<NotificationCard key={notification.id} notification={notification} />))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
 
           <div className="flex flex-col">
-            <button onClick={() => handleNavigate("/profile")} className="flex flex-row py-[12px] px-[16px] gap-[12px] hover:bg-neutral-200 cursor-pointer hover:-mx-[24px] hover:px-[40px]">
-              <UserRound className="h-[24px] w-[24px] text-neutral-400 stroke-[1px]" />
+            <button onClick={() => handleNavigate("/login/profile")} className="flex flex-row py-[12px] px-[16px] gap-[12px] hover:bg-neutral-200 cursor-pointer hover:-mx-[24px] hover:px-[40px]">
+              <UserRound className="h-[24px] w-[24px] text-neutral-400 " strokeWidth={1} />
               <span>Profile</span>
-
             </button>
 
-            <button onClick={() => handleNavigate("/reset-password")} className="flex flex-row py-[12px] px-[16px] gap-[12px] hover:bg-neutral-200 cursor-pointer hover:-mx-[24px] hover:px-[40px]">
-              <RotateCw className="h-[24px] w-[24px] text-neutral-400 stroke-[1px]" />
+            <button onClick={() => handleNavigate("/login/reset-password")} className="flex flex-row py-[12px] px-[16px] gap-[12px] hover:bg-neutral-200 cursor-pointer hover:-mx-[24px] hover:px-[40px]">
+              <RotateCw className="h-[24px] w-[24px] text-neutral-400 " strokeWidth={1} />
               <span>Reset password</span>
             </button>
 
+            {isAdmin && <button onClick={() => handleNavigate("/login/reset-password")} className="flex flex-row py-[12px] px-[16px] gap-[12px] hover:bg-neutral-200 cursor-pointer hover:-mx-[24px] hover:px-[40px]">
+              <ExternalLink className="h-[24px] w-[24px] text-neutral-400 " strokeWidth={1} />
+              <span>Admin panel</span>
+            </button>}
+
             <div className="w-full h-px bg-neutral-300"></div>
           </div>
-
-
-          <button onClick={() => handleNavigate("/")} className="flex flex-row py-[12px] px-[16px] gap-[12px] hover:bg-neutral-200 cursor-pointer hover:-mx-[24px] hover:px-[40px]">
-            <LogOut className="h-[24px] w-[24px] text-neutral-400 stroke-[1px]" />
-            <span>Log out</span>
-          </button>
-
+          {!isOpenNoti && <div>
+            <button onClick={() => handleNavigate("/")} className="flex flex-row py-[12px] px-[16px] gap-[12px] hover:bg-neutral-200 cursor-pointer hover:-mx-[24px] hover:px-[40px]">
+              <LogOut className="h-[24px] w-[24px] text-neutral-400 " strokeWidth={1} />
+              <span>Log out</span>
+            </button>
+          </div>}
         </div>
-      ) : (
+      ) : open && (
         <div className="fixed top-[49px] w-full bg-neutral-100 z-40 flex flex-col gap-[24px] px-[24px] py-[40px] border-b border-neutral-300 2xl:hidden">
           <Button
             buttonText="Log in"
@@ -70,9 +114,10 @@ function MobileMenu({ onClose, isLoggedIn }) {
             onClick={() => handleNavigate("/signup")}
           />
         </div>
-      )}
+      )
+      }
 
-    </>);
+    </div >);
 }
 
 export default MobileMenu;

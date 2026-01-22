@@ -7,13 +7,12 @@ import BlogCard from "./BlogCard/BlogCard";
 import CategoryTabs from "./CategoryTabs";
 import CategorySelect from "./CategorySelect";
 import SearchSuggestion from "./SearchSuggestion";
-import { useClickOutside } from "./useClickOutside";
+import { useClickOutside } from "../../utils/useClickOutside";
 import BlogCardSkeleton from "./BlogCard/BlogCardSkeleton";
 
 import axios from "axios";
 
 const API_URL = "https://blog-post-project-api.vercel.app/posts";
-
 
 function ArticleSection() {
     const [posts, setPosts] = useState([]);
