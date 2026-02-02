@@ -12,7 +12,15 @@ import LoginPage from "./pages/LoginPage";
 import NotFound from "./pages/NotFound";
 import ProfilePage from "./pages/ProfilePage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
-{/*import AdminArticleManagement from "./pages/Admin/AdminArticleManagement";*/}
+import AdminArticleManagement from "./pages/Admin/AdminArticleManagement";
+import AdminCreateArticle from "./pages/Admin/AdminCreateArticle";
+import AdminEditArticle from "./pages/Admin/AdminEditArticle";
+import AdminCategoryManagement from "./pages/Admin/AdminCategoryManagement";
+import AdminCreateCategory from "./pages/Admin/AdminCreateCategory";
+import AdminEditCategory from "./pages/Admin/AdminEditCategory";
+import AdminProfile from "./pages/Admin/AdminProfile";
+import AdminNotification from "./pages/Admin/AdminNotification";
+import AdminResetPassword from "./pages/Admin/AdminResetPassword";
 
 function App() {
   return (
@@ -35,7 +43,21 @@ function App() {
 
         {/* ADMIN LAYOUT */}
         <Route path="/login/admin" element={<AdminLayout />}>
-          {/*<Route path="article-management"element={<AdminArticleManagement />}/>*/}
+          <Route path="article-management">
+            <Route index element={<AdminArticleManagement />} />
+            <Route path="create-article" element={<AdminCreateArticle />} />
+            <Route path="edit-article" element={<AdminEditArticle />} />
+          </Route>
+          <Route path="category-management">
+            <Route index element={<AdminCategoryManagement />} />
+            <Route path="create-category" element={<AdminCreateCategory />} />
+            <Route path="edit-category" element={<AdminEditCategory />} />
+          </Route>
+          <Route path="profile" element={<AdminProfile />}/>
+          <Route path="notification" element={<AdminNotification />}/>
+          <Route path="reset-password" element={<AdminResetPassword />}/>
+           
+          
         </Route>
 
       </Routes>
