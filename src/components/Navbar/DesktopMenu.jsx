@@ -12,6 +12,8 @@ import { notifications } from "@/data/notifications";
 function DesktopMenu({ isLoggedIn, open, onToggle, onClose }) {
   const navigate = useNavigate();
   const ref = useRef(null);
+  const notiRef = useRef(null);
+
   const [isOpenNoti, setIsOpenNoti] = useState(false)
 
   const handleNavigate = (path) => {
@@ -36,12 +38,13 @@ function DesktopMenu({ isLoggedIn, open, onToggle, onClose }) {
     {isLoggedIn ? (
       <div className="hidden 2xl:flex items-center gap-[16px]">
         {/* Notification */}
-        <div className="relative flex justify-center items-center h-[48px] w-[48px] bg-white border border-neutral-200 rounded-full cursor-pointer">
-              <div>
-                <Bell className="text-neutral-400 stroke-[1px]" onClick={() => setIsOpenNoti((prev) => !prev)} />
+        <div className="relative flex justify-center items-center">
+              <div className=" flex justify-center items-center h-[48px] w-[48px] bg-white border border-neutral-200 rounded-full cursor-pointer"
+              onClick={() => {setIsOpenNoti((prev) => !prev); onClose();}}>
+                <Bell className="text-neutral-400 stroke-[1px]"  />
                 {!isOpenNoti && <div className="h-[8px] w-[8px] bg-brand-red absolute top-1 right-0 rounded-full"></div>}
                 {isOpenNoti && (
-                  <div className="absolute flex flex-col -right-2 mt-[20px] w-[343px] rounded-[12px] text-neutral-500 bg-neutral-100 border shadow-lg p-[16px] gap-[16px] z-50">
+                  <div className="absolute flex flex-col -right-2 top-[50px] w-[343px] rounded-[12px] text-neutral-500 bg-neutral-100 border shadow-lg p-[16px] gap-[16px] z-50">
                     {notifications.map((notification) => (<NotificationCard key={notification.id} notification={notification} />))}
                   </div>
                 )}
@@ -98,7 +101,7 @@ function DesktopMenu({ isLoggedIn, open, onToggle, onClose }) {
         </div>
       </div>
     )
-      : open && (
+      : (
         <div className="hidden 2xl:flex flex-row gap-[8px]">
           <Button buttonText="Log in" buttonStyle="secondary" onClick={() => navigate("/login")} />
           <Button buttonText="Sign up" buttonStyle="primary" onClick={() => navigate("/signup")} />

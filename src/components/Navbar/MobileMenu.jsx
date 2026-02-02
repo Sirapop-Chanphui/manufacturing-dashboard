@@ -1,16 +1,13 @@
 import Button from "../common/Button";
 import { useNavigate } from "react-router-dom";
 import man from "../../assets/img/men-and-cat.jpg"
-import { Bell } from 'lucide-react';
-import { UserRound } from 'lucide-react';
-import { RotateCw } from 'lucide-react';
-import { LogOut } from 'lucide-react';
+import { RotateCw, ExternalLink, Bell, UserRound, LogOut } from 'lucide-react';
 import logohh from "../../assets/icons/logo-hh.svg";
 import { Link } from "react-router-dom";
 import { useRef, useState } from "react";
 import { useClickOutside } from "@/utils/useClickOutside";
 import { notifications } from "@/data/notifications";
-import { ExternalLink } from 'lucide-react';
+import { forwardRef } from "react";
 
 import hamburger from "../../assets/icons/icon-hamburger.svg";
 import NotificationCard from "./NotificationCard";
@@ -26,13 +23,11 @@ function MobileMenu({ isLoggedIn, open, onToggle, onClose, isAdmin }) {
     onClose();
   };
 
-  useClickOutside(ref, () => {
-    if (open) onClose();
-  });
+
 
   return (
     <div ref={ref} className="2xl:hidden w-full flex flex-row justify-between items-center">
-      <div className="w-full flex flex-row justify-between items-center">
+      <div className="w-full  flex flex-row justify-between items-center">
         <Link to="/">
           <img
             src={logohh}
@@ -102,7 +97,7 @@ function MobileMenu({ isLoggedIn, open, onToggle, onClose, isAdmin }) {
           </div>}
         </div>
       ) : open && (
-        <div className="fixed top-[49px] w-full bg-neutral-100 z-40 flex flex-col gap-[24px] px-[24px] py-[40px] border-b border-neutral-300 2xl:hidden">
+        <div className="fixed top-[49px] w-full bg-neutral-100 z-40 flex flex-col gap-[24px] px-[24px] py-[40px] -mx-[24px] border-b border-neutral-300 2xl:hidden">
           <Button
             buttonText="Log in"
             buttonStyle="secondary"
