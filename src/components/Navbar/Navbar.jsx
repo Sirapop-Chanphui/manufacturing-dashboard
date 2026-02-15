@@ -1,13 +1,15 @@
 import DesktopMenu from "./DesktopMenu";
 import MobileMenu from "./MobileMenu";
+import { useAuth } from "@/context/authentication";
 import { useRef, useState } from "react";
 
 function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDesktopMenuOpen, setIsDesktopMenuOpen] = useState(false);
 
-  const isLoggedIn = true;
-  const isAdmin = false;
+  const { state, logout } = useAuth();
+  const isLoggedIn = Boolean(state.user);
+  const isAdmin = state.user?.role === "admin";
 
   return (
     <>
@@ -17,7 +19,7 @@ function Navbar() {
           onToggle={() => setIsMobileMenuOpen(p => !p)}
           onClose={() => setIsMobileMenuOpen(false)}
           isLoggedIn={isLoggedIn}
-          isAdmin ={isAdmin }
+          onLogout={logout}
         />
 
         <DesktopMenu
@@ -26,6 +28,7 @@ function Navbar() {
           onClose={() => setIsDesktopMenuOpen(false)}
           isLoggedIn={isLoggedIn}
           isAdmin ={isAdmin }
+          onLogout={logout}
         />
       </nav>
 

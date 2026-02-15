@@ -12,7 +12,7 @@ import BlogCardSkeleton from "./BlogCard/BlogCardSkeleton";
 
 import axios from "axios";
 
-const API_URL = "https://blog-post-project-api.vercel.app/posts";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function ArticleSection() {
     const [posts, setPosts] = useState([]);
@@ -31,14 +31,17 @@ function ArticleSection() {
 
     const categories = [
         "Highlight",
-        "Cat",
-        "Inspiration",
-        "General",
+        "Quality",
+        "Compliance",
+        "Production",
+        "Maintenance",
+        "ProblemSolving",
+        "Lean"
     ];
 
     const fetchByKeyword = async () => {
         try {
-            const response = await axios.get(API_URL, {
+            const response = await axios.get(`${API_BASE_URL}/posts`, {
                 params: {
                     page: 1,
                     limit: 30,
@@ -47,6 +50,7 @@ function ArticleSection() {
                 }
             }
             )
+            
             setSuggestionPosts(response.data.posts)
         } catch (error) {
             console.log("fetchSugeestion: ", error)
@@ -57,7 +61,7 @@ function ArticleSection() {
 
     const fetchPosts = async () => {
         try {
-            const response = await axios.get(API_URL, {
+            const response = await axios.get(`${API_BASE_URL}/posts`, {
                 params: {
                     page: page,
                     limit: 6,
@@ -76,6 +80,7 @@ function ArticleSection() {
             if (response.data.currentPage >= response.data.totalPages) {
                 setHasMore(false);
             } else { setHasMore(true) }
+            console.log(response.data)
 
         } catch (error) {
             console.log("fetchPosts: ", error)
@@ -104,6 +109,7 @@ function ArticleSection() {
 
     }, [searchKeyword])
 
+    
     useEffect(() => {
         setIsLoading(true)
         setIsRefreshing(true)
@@ -135,6 +141,7 @@ function ArticleSection() {
                         onClick={(category) => {
                             setSelectedCategory(category);
                             setPage(1);
+                            setPosts([]);
                             setIsRefreshing(true);
 
                         }}
@@ -206,7 +213,7 @@ function ArticleSection() {
                             title={blog.title}
                             description={blog.description}
                             author={blog.author}
-                            date={formatDateEn(blog.date)}
+                            date={formatDateEn(blog.created_at)}
                         />
                     ))}
                     {isRefreshing && (
