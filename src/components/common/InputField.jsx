@@ -9,6 +9,7 @@ function InputField({
   error,
   onChange,
   placeholder,
+  hideErrorMessage = false,
 }) {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -34,7 +35,7 @@ function InputField({
           onChange={onChange}
           placeholder={placeholder}
           aria-invalid={hasError}
-          aria-describedby={errorMessage ? `${name}-error` : undefined}
+          aria-describedby={errorMessage && !hideErrorMessage ? `${name}-error` : undefined}
           className={`
             w-full rounded-[8px] border pl-[16px] pr-[44px] py-[12px] text-body-1 bg-white
             focus:outline-none focus:ring-1
@@ -61,7 +62,7 @@ function InputField({
         )}
       </div>
 
-      {errorMessage && (
+      {errorMessage && !hideErrorMessage && (
         <span id={`${name}-error`} className="text-xs text-red-500">
           {errorMessage}
         </span>

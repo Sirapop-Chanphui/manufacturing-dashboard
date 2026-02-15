@@ -3,17 +3,24 @@ import { useSignUpForm } from "./useSignUpForm";
 import { Link } from "react-router-dom";
 import Button from "../common/Button";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/authentication";
+import { mapBackendErrors } from "@/utils/mapBackendErrors";
+
 
 function SignUpForm() {
-    const { values, errors, handleChange, handleSubmit } = useSignUpForm();
+    const { values, errors, setErrors, handleChange, handleSubmit } = useSignUpForm();
+    const { register, state } = useAuth();
     const navigate = useNavigate();
 
-
-    const onSubmit = (data) => {
-        console.log("Sign up data:", data);
-        // call API here
-        navigate("/signup/success");
+    const onSubmit = async (data) => {
+        try {
+            await register(data);
+            navigate("/signup/success");
+        } catch (error) {
+            setErrors(mapBackendErrors(error));
+        }
     };
+
 
     return (
         <div className="min-h-screen flex flex-col items-center pt-[88px] 2xl:pt-[140px]  bg-neutral-100 px-4">
@@ -66,9 +73,11 @@ function SignUpForm() {
                 <Button
                     type="submit"
                     buttonStyle="primary"
-                    buttonText="Sign up"
+                    buttonText={state.loading ? "Signing up..." : "Sign up"}
+                    disabled={state.loading}
                     className="w-fit self-center"
                 />
+
 
                 <p className="text-body-1 text-center text-neutral-400">
                     Already have an account?{" "}

@@ -1,32 +1,48 @@
 import Button from "../common/Button";
 import { useNavigate } from "react-router-dom";
 import man from "../../assets/img/men-and-cat.jpg"
-import { RotateCw, ExternalLink, Bell, UserRound, LogOut } from 'lucide-react';
+import { RotateCw, Bell, UserRound, LogOut, Home } from 'lucide-react';
 import logohh from "../../assets/icons/logo-hh.svg";
 import { Link } from "react-router-dom";
 import { useRef, useState } from "react";
 import { useClickOutside } from "@/utils/useClickOutside";
 import { notifications } from "@/data/notifications";
-import { forwardRef } from "react";
 
 import hamburger from "../../assets/icons/icon-hamburger.svg";
 import NotificationCard from "./NotificationCard";
 
 
-function MobileMenu({ isLoggedIn, open, onToggle, onClose, isAdmin }) {
+function MobileMenu({ isLoggedIn, open, onToggle, onClose, onLogout }) {
   const navigate = useNavigate();
-  const ref = useRef(null);
-  const [isOpenNoti, setIsOpenNoti] = useState(false)
+  const menuRef = useRef(null);
+  const notiRef = useRef(null);
+  const [isOpenNoti, setIsOpenNoti] = useState(false);
 
   const handleNavigate = (path) => {
     navigate(path);
     onClose();
   };
 
+  const handleLogout = () => {
+    onLogout();
+    handleNavigate("/login");
+  };
 
+  useClickOutside(menuRef, () => {
+    if (!open) return;
+    if (isOpenNoti) {
+      setIsOpenNoti(false);
+    } else {
+      onClose();
+    }
+  });
+
+  useClickOutside(notiRef, () => {
+    if (isOpenNoti) setIsOpenNoti(false);
+  });
 
   return (
-    <div ref={ref} className="2xl:hidden w-full flex flex-row justify-between items-center">
+    <div ref={menuRef} className="2xl:hidden w-full flex flex-row justify-between items-center">
       <div className="w-full  flex flex-row justify-between items-center">
         <Link to="/">
           <img
@@ -57,21 +73,28 @@ function MobileMenu({ isLoggedIn, open, onToggle, onClose, isAdmin }) {
               />
               <span className="text-body-1 text-neutral-500">Moodang</span>
             </div>
-            <div className="relative flex justify-center items-center h-[48px] w-[48px] bg-white border border-neutral-200 rounded-full cursor-pointer">
-              <div>
-                <Bell className="text-neutral-400 stroke-[1px]" onClick={() => setIsOpenNoti((prev) => !prev)} />
+            <div ref={notiRef} className="relative flex justify-center items-center h-[48px] w-[48px] bg-white border border-neutral-200 rounded-full cursor-pointer">
+              <div className="w-full h-full flex justify-center items-center" onClick={() => setIsOpenNoti((prev) => !prev)}>
+                <Bell className="text-neutral-400 stroke-[1px]" />
                 {!isOpenNoti && <div className="h-[8px] w-[8px] bg-brand-red absolute top-1 right-0 rounded-full"></div>}
-                {isOpenNoti && (
-                  <div className="absolute flex flex-col -right-2 mt-[20px] w-[343px] rounded-[12px] text-neutral-500 bg-neutral-100 border shadow-lg p-[16px] gap-[16px] z-50">
-                    {notifications.map((notification) => (<NotificationCard key={notification.id} notification={notification} />))}
-                  </div>
-                )}
               </div>
+              {isOpenNoti && (
+                <div className="absolute right-0 top-full mt-2 flex flex-col w-[343px] rounded-[12px] text-neutral-500 bg-neutral-100 border shadow-lg p-[16px] gap-[16px] z-50">
+                  {notifications.map((notification) => (
+                    <NotificationCard key={notification.id} notification={notification} />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
 
           <div className="flex flex-col">
+            <button onClick={() => handleNavigate("/")} className="flex flex-row py-[12px] px-[16px] gap-[12px] hover:bg-neutral-200 cursor-pointer hover:-mx-[24px] hover:px-[40px]">
+              <Home className="h-[24px] w-[24px] text-neutral-400" strokeWidth={1} />
+              <span>Home</span>
+            </button>
+
             <button onClick={() => handleNavigate("/login/profile")} className="flex flex-row py-[12px] px-[16px] gap-[12px] hover:bg-neutral-200 cursor-pointer hover:-mx-[24px] hover:px-[40px]">
               <UserRound className="h-[24px] w-[24px] text-neutral-400 " strokeWidth={1} />
               <span>Profile</span>
@@ -82,15 +105,10 @@ function MobileMenu({ isLoggedIn, open, onToggle, onClose, isAdmin }) {
               <span>Reset password</span>
             </button>
 
-            {isAdmin && <button onClick={() => handleNavigate("/login/reset-password")} className="flex flex-row py-[12px] px-[16px] gap-[12px] hover:bg-neutral-200 cursor-pointer hover:-mx-[24px] hover:px-[40px]">
-              <ExternalLink className="h-[24px] w-[24px] text-neutral-400 " strokeWidth={1} />
-              <span>Admin panel</span>
-            </button>}
-
             <div className="w-full h-px bg-neutral-300"></div>
           </div>
           {!isOpenNoti && <div>
-            <button onClick={() => handleNavigate("/")} className="flex flex-row py-[12px] px-[16px] gap-[12px] hover:bg-neutral-200 cursor-pointer hover:-mx-[24px] hover:px-[40px]">
+            <button onClick={handleLogout} className="flex flex-row py-[12px] px-[16px] gap-[12px] hover:bg-neutral-200 cursor-pointer hover:-mx-[24px] hover:px-[40px]">
               <LogOut className="h-[24px] w-[24px] text-neutral-400 " strokeWidth={1} />
               <span>Log out</span>
             </button>

@@ -9,9 +9,16 @@ import {
 } from "lucide-react";
 import logohh from "../../assets/icons/logo-hh.svg";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/authentication";
 
 function AdminSidebar() {
   const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   const menuItems = [
     {
@@ -47,7 +54,7 @@ function AdminSidebar() {
       <div>
         <div
           className="px-[24px] py-[60px] cursor-pointer"
-          onClick={() => navigate("/login/admin")}
+          onClick={() => navigate("/")}
         >
           <img
             src={logohh}
@@ -70,18 +77,18 @@ function AdminSidebar() {
       </div>
 
       {/* BOTTOM */}
-      <div className="px-4 py-4 ">
+      <div className="px-4 py-4">
         <button
           onClick={() => window.open("/", "_blank")}
-          className="flex items-center gap-[12px] px-[24px] py-[20px] text-body-1 hover:bg-neutral-300 w-full"
+          className="flex items-center gap-[12px] px-[24px] py-[20px] text-body-1 transition-all duration-200 ease-out hover:translate-x-1 hover:cursor-pointer w-full"
         >
           <ExternalLink size={18} />
           hh. website
         </button>
         <div className="h-px w-[280px] -ml-[16px] -mr-[16px] bg-neutral-300"></div>
         <button
-          onClick={() => navigate("/login")}
-          className="flex items-center gap-[12px] px-[24px] py-[20px] text-body-1 hover:bg-neutral-300 w-full"
+          onClick={handleLogout}
+          className="flex items-center gap-[12px] px-[24px] py-[20px] text-body-1 transition-all duration-200 ease-out hover:translate-x-1 hover:cursor-pointer w-full"
         >
           <LogOut size={18} />
           Log out
