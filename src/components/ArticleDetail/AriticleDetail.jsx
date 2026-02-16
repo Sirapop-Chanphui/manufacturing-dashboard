@@ -10,6 +10,8 @@ import ArticleDetailSkeleton from "./ArticleDetailSkeleton";
 import LoginRequiredDialog from "../common/LoginRequiredDialog"
 import { toast } from "sonner"
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const ArticleDetail = ({ articleId }) => {
     const [article, setArticle] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -74,9 +76,9 @@ const ArticleDetail = ({ articleId }) => {
             try {
                 setIsLoading(true);
                 const response = await axios.get(
-                    `https://blog-post-project-api.vercel.app/posts/${articleId}`
+                    `${API_BASE_URL}/posts/${articleId}`
                 );
-                setArticle(response.data);
+                setArticle(response.data.data);
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -107,21 +109,26 @@ const ArticleDetail = ({ articleId }) => {
                 {/* LEFT */}
                 <div className="flex flex-col 2xl:w-full gap-[24px]">
                     <ArticleHeader article={article} />
-                    <ArticleContent content={article.content} />แ
-
-                    <div className="-mx-[16px] 2xl:m-0">
+                    <ArticleContent content={article.content ?? ""} />
+                    {/* Mobile: AuthorCard อยู่หลัง content ก่อน Actions */}
+                    <div className="2xl:hidden">
+                        <AuthorCard author={article.author} />
+                    </div>
+                    <div className="-mx-[16px] 2xl:mt-[32px] 2xl:m-0">
                         <ArticleActions
                             onLike={handleLike}
                             onCopy={handleCopy}
                             articleId={article.id}
+                            likes={article.likes_count}
                         />
                     </div>
-
                     <ArticleCommentSection onClick={handleComment} />
                 </div>
 
-                {/* RIGHT */}
-                <AuthorCard author={article.author} />
+                {/* Desktop: AuthorCard อยู่ด้านขวา */}
+                <div className="hidden 2xl:block 2xl:shrink-0">
+                    <AuthorCard author={article.author} />
+                </div>
             </div>
 
             <LoginRequiredDialog

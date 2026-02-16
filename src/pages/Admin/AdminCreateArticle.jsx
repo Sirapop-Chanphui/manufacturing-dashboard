@@ -1,48 +1,71 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import Button from "@/components/common/Button";
-import { toast } from "sonner"
+import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const categories = ["all", "Highlight", "Cat", "Inspiration", "General"];
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1761839259112-aaea03db3633?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+
+const parseCategoriesResponse = (response) => {
+    const raw = response?.data?.categories ?? response?.data?.data ?? response?.data ?? [];
+    const list = Array.isArray(raw) ? raw : [];
+    return list.map((item) => ({
+        id: item.id ?? item.name,
+        name: item.name ?? item.category_name ?? item.title ?? String(item.id ?? ""),
+    }));
+};
 
 function AdminCreateArticle() {
+    const [categories, setCategories] = useState([]);
     const [category, setCategory] = useState("");
     const [title, setTitle] = useState("");
     const [intro, setIntro] = useState("");
     const [content, setContent] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
 
-    const handleSave = (type) => {
-        navigate("/login/admin/article-management")
-        const isDraft = type === "draft";
-        toast.custom((t) => (
-            <div className="flex w-[700px] items-start gap-[12px] rounded-[8px] bg-brand-green p-4 shadow-lg relative">
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await axios.get(`${API_BASE_URL}/categories`);
+                setCategories(parseCategoriesResponse(response));
+            } catch {
+                setCategories([]);
+            }
+        };
+        fetchCategories();
+    }, []);
 
-                <div className="flex flex-col gap-1">
-                    <p className="text-headline-4 text-white">
-                        {isDraft
-                            ? "Create article and saved as draft"
-                            : "Create article and published"}
-                    </p>
-                    <p className="text-body-2 text-white">
-                        {isDraft
-                            ? "You can publish article later"
-                            : "Your article has been successfully published"}
-                    </p>
-                </div>
-                <button
-                    onClick={() => toast.dismiss(t)}
-                    className="absolute top-4 right-6 text-white opacity-80 hover:opacity-100"
-                    aria-label="Close"
-                >
-                    ✕
-                </button>
-            </div>
-        ), {
-            duration: 5000,
-        });
-    }
+    const handleSave = async (type) => {
+        const status = type === "draft" ? "Draft" : "Published";
+        if (!title.trim()) {
+            toast.error("Please enter a title");
+            return;
+        }
+        if (!category) {
+            toast.error("Please select a category");
+            return;
+        }
+        try {
+            setIsSubmitting(true);
+            await axios.post(`${API_BASE_URL}/admin/posts`, {
+                title: title.trim(),
+                image: PLACEHOLDER_IMAGE,
+                category,
+                description: intro.trim() || title.trim(),
+                content: content.trim() || "",
+                status,
+            });
+            toast.success(status === "Draft" ? "Article saved as draft" : "Article published successfully");
+            navigate("/login/admin/article-management");
+        } catch (err) {
+            toast.error(err.response?.data?.message ?? "Failed to create article");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     return (
         <div className="min-h-screen bg-neutral-100">
@@ -51,8 +74,18 @@ function AdminCreateArticle() {
                 <h1 className="text-xl font-semibold">Create article</h1>
 
                 <div className="flex gap-3">
-                    <Button onClick={() => handleSave("draft")} buttonText="Save as draft" buttonStyle="secondary" />
-                    <Button onClick={() => handleSave("publish")} buttonText="Save and publish" buttonStyle="primary" />
+                    <Button
+                        onClick={() => handleSave("draft")}
+                        buttonText="Save as draft"
+                        buttonStyle="secondary"
+                        disabled={isSubmitting}
+                    />
+                    <Button
+                        onClick={() => handleSave("publish")}
+                        buttonText="Save and publish"
+                        buttonStyle="primary"
+                        disabled={isSubmitting}
+                    />
                 </div>
             </div>
 
@@ -65,15 +98,24 @@ function AdminCreateArticle() {
                     </label>
 
                     <div className="flex items-center gap-6">
-                        <div className="w-[460px] h-[260px] rounded-lg bg-neutral-200 flex items-center justify-center">
-                            <img className="text-neutral-400 text-sm" alt="Aritcle Image"></img>
+                        <div className="w-[460px] h-[260px] rounded-lg bg-neutral-200 overflow-hidden">
+                            <img
+                                src={PLACEHOLDER_IMAGE}
+                                alt="Article thumbnail"
+                                className="w-full h-full object-cover"
+                            />
                         </div>
 
-                        <button className="px-4 py-2 text-sm self-end border border-neutral-300 rounded-full bg-white">
+                        <button
+                            type="button"
+                            disabled
+                            className="px-4 py-2 text-sm self-end border border-neutral-300 rounded-full bg-white opacity-50 cursor-not-allowed"
+                        >
                             Upload thumbnail image
                         </button>
                     </div>
                 </div>
+
 
                 {/* Category */}
                 <div className="flex flex-col gap-[4px]">
@@ -84,9 +126,10 @@ function AdminCreateArticle() {
                             onChange={(e) => setCategory(e.target.value)}
                             className="w-full appearance-none border border-neutral-300 rounded-[8px] pl-[16px] pr-[12px] py-[12px] text-body-1 text-neutral-400 bg-white focus:outline-none focus:ring-1 focus:ring-neutral-400"
                         >
+                            <option value="">Select category</option>
                             {categories.map((cat) => (
-                                <option key={cat} value={cat}>
-                                    {cat === "all" ? "Select category" : cat}
+                                <option key={cat.id} value={cat.name}>
+                                    {cat.name}
                                 </option>
                             ))}
                         </select>

@@ -25,7 +25,6 @@ function AuthProvider(props) {
             return;
         }
 
-console.log("1")
         try {
           
             setState((prevState) => ({ ...prevState, getUserLoading: true }));
@@ -110,6 +109,7 @@ console.log("1")
                 register,
                 login,
                 logout,
+                fetchUser,
                 isAuthenticated,
             }}
         >

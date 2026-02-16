@@ -1,82 +1,163 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronDown, Trash2 } from "lucide-react";
 import Button from "@/components/common/Button";
-import { toast } from "sonner"
-import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
 
-const categories = ["all", "Highlight", "Cat", "Inspiration", "General"];
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1761839259112-aaea03db3633?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+
+const CATEGORY_MAP = {
+    1: "Quality", 2: "Compliance", 3: "Production", 4: "Maintenance",
+    5: "ProblemSolving", 6: "Lean", 7: "Highlight",
+};
+
+const parseCategoriesResponse = (response) => {
+    const raw = response?.data?.categories ?? response?.data?.data ?? response?.data ?? [];
+    const list = Array.isArray(raw) ? raw : [];
+    return list.map((item) => ({
+        id: item.id ?? item.name,
+        name: item.name ?? item.category_name ?? item.title ?? String(item.id ?? ""),
+    }));
+};
 
 function AdminEditArticle() {
+    const { state } = useLocation();
+    const articleFromState = state?.article;
+    const navigate = useNavigate();
+
+    const [categories, setCategories] = useState([]);
     const [category, setCategory] = useState("");
     const [title, setTitle] = useState("");
     const [intro, setIntro] = useState("");
     const [content, setContent] = useState("");
+    const [image, setImage] = useState(PLACEHOLDER_IMAGE);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [openDelete, setOpenDelete] = useState(false);
-    const [selectedArticle, setSelectedArticle] = useState(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
-    const navigate = useNavigate();
+    const articleId = articleFromState?.id;
 
-    const handleSave = (type) => {
-        navigate("/login/admin/article-management")
-        const isDraft = type === "draft";
-        toast.custom((t) => (
-            <div className="flex w-[700px] items-start gap-[12px] rounded-[8px] bg-brand-green p-4 shadow-lg relative">
+    useEffect(() => {
+        if (!articleFromState?.id) {
+            setIsLoading(false);
+            navigate("/login/admin/article-management", { replace: true });
+            return;
+        }
+        setTitle(articleFromState.title ?? "");
+        setIntro(articleFromState.description ?? "");
+        setCategory(articleFromState.category ?? "");
+        setImage(articleFromState.image ?? PLACEHOLDER_IMAGE);
 
-                <div className="flex flex-col gap-1">
-                    <p className="text-headline-4 text-white">
-                        {isDraft
-                            ? "Create article and saved as draft"
-                            : "Create article and published"}
-                    </p>
-                    <p className="text-body-2 text-white">
-                        {isDraft
-                            ? "You can publish article later"
-                            : "Your article has been successfully published"}
-                    </p>
-                </div>
-                <button
-                    onClick={() => toast.dismiss(t)}
-                    className="absolute top-4 right-6 text-white opacity-80 hover:opacity-100"
-                    aria-label="Close"
-                >
-                    ✕
-                </button>
+        const fetchFullArticle = async () => {
+            try {
+                const response = await axios.get(`${API_BASE_URL}/posts/${articleId}`);
+                const raw = response.data?.data ?? response.data;
+                if (raw) {
+                    setContent(raw.content ?? "");
+                    setTitle((prev) => prev || (raw.title ?? ""));
+                    setIntro((prev) => prev || (raw.description ?? ""));
+                    setImage((prev) => prev || (raw.image ?? PLACEHOLDER_IMAGE));
+                    const catName = (raw.category ?? CATEGORY_MAP[raw.category_id]) ?? articleFromState.category;
+                    if (catName) setCategory(catName);
+                }
+            } catch {
+                toast.error("Failed to load article details");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        const fetchCategories = async () => {
+            try {
+                const response = await axios.get(`${API_BASE_URL}/categories`);
+                setCategories(parseCategoriesResponse(response));
+            } catch {
+                setCategories([]);
+            }
+        };
+
+        fetchFullArticle();
+        fetchCategories();
+    }, [articleId, articleFromState, navigate]);
+
+    const handleSave = async (type) => {
+        const status = type === "draft" ? "Draft" : "Published";
+        if (!title.trim()) {
+            toast.error("Please enter a title");
+            return;
+        }
+        if (!category) {
+            toast.error("Please select a category");
+            return;
+        }
+        try {
+            setIsSubmitting(true);
+            await axios.put(`${API_BASE_URL}/admin/posts/${articleId}`, {
+                title: title.trim(),
+                image,
+                category,
+                description: intro.trim() || title.trim(),
+                content: content.trim() || "",
+                status,
+            });
+            toast.success(status === "Draft" ? "Article saved as draft" : "Article updated and published");
+            navigate("/login/admin/article-management");
+        } catch (err) {
+            toast.error(err.response?.data?.message ?? "Failed to update article");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleDelete = async () => {
+        try {
+            setIsDeleting(true);
+            await axios.delete(`${API_BASE_URL}/admin/posts/${articleId}`);
+            setOpenDelete(false);
+            toast.success("Article deleted successfully");
+            navigate("/login/admin/article-management");
+        } catch (err) {
+            toast.error(err.response?.data?.message ?? "Failed to delete article");
+        } finally {
+            setIsDeleting(false);
+        }
+    };
+
+    if (!articleFromState) {
+        return (
+            <div className="min-h-screen bg-neutral-100 flex items-center justify-center">
+                <p className="text-body-1 text-neutral-400">
+                    {isLoading ? "Redirecting..." : "Loading..."}
+                </p>
             </div>
-        ), {
-            duration: 5000,
-        });
+        );
     }
 
     return (
         <div className="min-h-screen bg-neutral-100">
-            {/* Header */}
             <div className="flex items-center justify-between px-[60px] py-[24px] border-b border-neutral-200">
-                <h1 className="text-xl font-semibold">Create article</h1>
+                <h1 className="text-xl font-semibold">Edit article</h1>
 
                 <div className="flex gap-3">
-                    <Button onClick={() => handleSave("draft")} buttonText="Save as draft" buttonStyle="secondary" />
-                    <Button onClick={() => handleSave("publish")} buttonText="Save" buttonStyle="primary" />
+                    <Button onClick={() => handleSave("draft")} buttonText="Save as draft" buttonStyle="secondary" disabled={isSubmitting} />
+                    <Button onClick={() => handleSave("publish")} buttonText="Save" buttonStyle="primary" disabled={isSubmitting} />
                 </div>
             </div>
 
-            {/* Content */}
             <div className="flex flex-col px-[60px] py-[40px] max-w-[900px] gap-[28px]">
-                {/* Thumbnail */}
                 <div className="mb-6">
-                    <label className="block text-body-1 text-neutral-400 mb-2">
-                        Thumbnail image
-                    </label>
-
+                    <label className="block text-body-1 text-neutral-400 mb-2">Thumbnail image</label>
                     <div className="flex items-center gap-6">
-                        <div className="w-[460px] h-[260px] rounded-lg bg-neutral-200 flex items-center justify-center">
-                            <img className="text-body-1 text-neutral-400" alt="Aritcle Image"></img>
+                        <div className="w-[460px] h-[260px] rounded-lg bg-neutral-200 flex items-center justify-center overflow-hidden">
+                            <img src={image} alt={title || "Article"} className="w-full h-full object-cover" />
                         </div>
-
-                        <Button onClick={() => handleSave("draft")} buttonText="Upload thumbnail image" buttonStyle="secondary" className="self-end" />
+                        <Button buttonText="Upload thumbnail image" buttonStyle="secondary" className="self-end" disabled />
                     </div>
                 </div>
 
-                {/* Category */}
                 <div className="flex flex-col gap-[4px]">
                     <p className="text-body-1 text-neutral-400">Category</p>
                     <div className="relative w-[480px]">
@@ -85,17 +166,12 @@ function AdminEditArticle() {
                             onChange={(e) => setCategory(e.target.value)}
                             className="w-full appearance-none border border-neutral-300 rounded-[8px] pl-[16px] pr-[12px] py-[12px] text-body-1 text-neutral-400 bg-white focus:outline-none focus:ring-1 focus:ring-neutral-400"
                         >
+                            <option value="">Select category</option>
                             {categories.map((cat) => (
-                                <option key={cat} value={cat}>
-                                    {cat === "all" ? "Select category" : cat}
-                                </option>
+                                <option key={cat.id} value={cat.name}>{cat.name}</option>
                             ))}
                         </select>
-
-                        <ChevronDown
-                            size={16}
-                            className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400"
-                        />
+                        <ChevronDown size={16} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400" />
                     </div>
                 </div>
                 {/* Author */}
@@ -168,11 +244,8 @@ function AdminEditArticle() {
             <DeleteConfirmDialog
                 open={openDelete}
                 onOpenChange={setOpenDelete}
-                onConfirm={() => {
-                    console.log("delete article:", selectedArticle);
-                    //  เรียก API ลบจริงตรงนี้
-                    setOpenDelete(false);
-                }}
+                onConfirm={handleDelete}
+                isDeleting={isDeleting}
             />
         </div >
 
@@ -189,13 +262,12 @@ import {
     AlertDialogCancel,
 } from "@/components/ui/alert-dialog"
 
-function DeleteConfirmDialog({ open, onOpenChange, onConfirm }) {
+function DeleteConfirmDialog({ open, onOpenChange, onConfirm, isDeleting = false }) {
     return (
         <AlertDialog open={open} onOpenChange={onOpenChange}>
             <AlertDialogContent className="w-[477px] rounded-[16px] pt-[16px] px-[16px] pb-[40px] gap-[24px]">
-                {/* close (X) */}
                 <div className="flex justify-end">
-                    <AlertDialogCancel aria-label="Close" className="flex justify-end items-end w-fit h-[24px] p-0 text-xl text-neutral-500 border-none shadow-none hover:cursor-pointer hover:bg-transparent hover:scale-125">
+                    <AlertDialogCancel aria-label="Close" className="flex justify-end items-end w-fit h-[24px] p-0 text-xl text-neutral-500 border-none shadow-none hover:cursor-pointer hover:bg-transparent hover:scale-125" disabled={isDeleting}>
                         ✕
                     </AlertDialogCancel>
                 </div>
@@ -206,18 +278,12 @@ function DeleteConfirmDialog({ open, onOpenChange, onConfirm }) {
                     <AlertDialogTitle className="text-body-1 text-neutral-400 text-center">
                         Do you want to delete this article?
                     </AlertDialogTitle>
-
                     <div className="flex flex-row gap-4 mt-2">
-                        <Button buttonText="Cancel" buttonStyle="secondary" className="w-fit" onClick={() => onOpenChange(false)} />
-                        <Button buttonText="Delete" buttonStyle="primary" className="w-fit" onClick={onConfirm} />
+                        <Button buttonText="Cancel" buttonStyle="secondary" className="w-fit" onClick={() => onOpenChange(false)} disabled={isDeleting} />
+                        <Button buttonText={isDeleting ? "Deleting..." : "Delete"} buttonStyle="primary" className="w-fit" onClick={onConfirm} disabled={isDeleting} />
                     </div>
-
-
-
-
-
                 </AlertDialogHeader>
             </AlertDialogContent>
-        </AlertDialog >
-    )
+        </AlertDialog>
+    );
 }

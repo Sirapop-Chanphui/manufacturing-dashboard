@@ -1,40 +1,60 @@
 import Button from "@/components/common/Button";
 import InputField from "@/components/common/InputField";
-import { useState } from "react";
-import men from "../../assets/img/men-and-cat.jpg"
-import { toast } from "sonner"
+import { useState, useEffect } from "react";
+import { User } from "lucide-react";
+import { toast } from "sonner";
+import { useAuth } from "@/context/authentication";
+import axios from "axios";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function AdminProfile() {
-    const [name, setName] = useState("Thompson Parker");
-    const [username, setUsername] = useState("thompson.p");
-    const [email, setEmail] = useState("thompson@example.com");
-    const [bio, setBio] = useState(
-        "Content writer and cat lover. Passionate about storytelling and creativity."
-    );
+    const { user, fetchUser, state } = useAuth();
+    const [name, setName] = useState("");
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [bio, setBio] = useState("");
+    const [avatar, setAvatar] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleSave = () => {
-        toast.custom((t) => (
-            <div className="flex w-[700px] items-start gap-[12px] rounded-[8px] bg-brand-green p-4 shadow-lg relative">
+    useEffect(() => {
+        if (user) {
+            setName(user.name ?? user.username ?? "");
+            setUsername(user.username ?? "");
+            setEmail(user.email ?? "");
+            setBio(user.bio ?? "");
+            setAvatar(user.avatar ?? user.image ?? "");
+        }
+    }, [user]);
 
-                <div className="flex flex-col gap-1">
-                    <p className="text-headline-4 text-white">
-                        Saved profile
-                    </p>
-                    <p className="text-body-2 text-white">
-                        Your profile has been successfully updated
-                    </p>
-                </div>
-                <button
-                    onClick={() => toast.dismiss(t)}
-                    className="absolute top-4 right-6 text-white opacity-80 hover:opacity-100"
-                    aria-label="Close"
-                >
-                    ✕
-                </button>
+    const handleSave = async () => {
+        if (!name.trim()) {
+            toast.error("Please enter your name");
+            return;
+        }
+        try {
+            setIsSubmitting(true);
+            await axios.put(`${API_BASE_URL}/auth/profile`, {
+                name: name.trim(),
+                username: username.trim() || undefined,
+                email: email.trim() || undefined,
+                bio: bio.trim() || undefined,
+            });
+            await fetchUser();
+            toast.success("Profile updated successfully");
+        } catch (err) {
+            toast.error(err.response?.data?.message ?? "Failed to update profile");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    if (state.getUserLoading && !user) {
+        return (
+            <div className="flex bg-neutral-100 min-h-screen items-center justify-center">
+                <p className="text-body-1 text-neutral-400">Loading profile...</p>
             </div>
-        ), {
-            duration: 5000,
-        });
+        );
     }
 
     return (
@@ -43,18 +63,24 @@ function AdminProfile() {
                 {/* Header */}
                 <div className="flex flex-row justify-between items-center px-[60px] py-[24px] border-b border-neutral-300 ">
                     <h2 className="text-headline-3 font-semibold">Profile</h2>
-                    <Button buttonText="Save" buttonStyle="primary" className="flex flex-row" onClick={() => handleSave()} />
+                    <Button buttonText="Save" buttonStyle="primary" className="flex flex-row" onClick={handleSave} disabled={isSubmitting} />
                 </div>
 
                 {/* Content */}
                 <div className="flex flex-col pt-[40px] px-[60px] pb-[120px] gap-[40px]">
                     {/* Profile Image */}
-                    <div className="flex flex-row items-center gap-[28px] ">
-                        <img
-                            src={men}
-                            alt="profile"
-                            className="w-24 h-24 rounded-full object-cover"
-                        />
+                    <div className="flex flex-row items-center gap-[28px]">
+                        {avatar ? (
+                            <img
+                                src={avatar}
+                                alt="Profile"
+                                className="w-24 h-24 rounded-full object-cover object-center bg-neutral-200"
+                            />
+                        ) : (
+                            <div className="w-24 h-24 rounded-full bg-neutral-200 flex items-center justify-center">
+                                <User size={48} className="text-neutral-400" />
+                            </div>
+                        )}
 
                         <Button buttonText="Upload profile picture" buttonStyle="secondary" className="flex flex-row" />
 
