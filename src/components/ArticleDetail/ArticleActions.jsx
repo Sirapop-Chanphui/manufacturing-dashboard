@@ -6,7 +6,7 @@ import facebook from "../../assets/icons/icon-facebook.svg";
 import linkedin from "../../assets/icons/icon-linkedin.svg"
 import x from "../../assets/icons/icon-x.svg"
 
-function ArticleActions({ onLike, onCopy }) {
+function ArticleActions({ onLike, onCopy, likes }) {
   const articleUrl = encodeURIComponent(window.location.href);
 
   {/*
@@ -37,7 +37,7 @@ function ArticleActions({ onLike, onCopy }) {
   return (
     <div className='flex flex-col  w-full  h-[152px] 2xl:h-[80px] bg-neutral-200 2xl:rounded-[16px]'>
       <div className='flex flex-col  2xl:flex-row 2xl:justify-between p-[16px] gap-[24px]'>
-        <Button onClick={onLike} buttonText="321" buttonStyle="secondary" icon={Smile} />
+        <Button onClick={onLike} buttonText={likes} buttonStyle="secondary" icon={Smile} />
         <div className='flex flex-row justify-center items-center gap-[8px]'>
           <Button onClick={onCopy} buttonText="Copy link" buttonStyle="secondary" icon={Copy} px="px-[28px]" />
           {/* Facebook */}

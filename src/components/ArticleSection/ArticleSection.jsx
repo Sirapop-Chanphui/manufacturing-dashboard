@@ -14,30 +14,40 @@ import axios from "axios";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+const parseCategoriesResponse = (response) => {
+    const raw = response?.data?.categories ?? response?.data?.data ?? response?.data ?? [];
+    const list = Array.isArray(raw) ? raw : [];
+    return list.map((item) => item.name ?? item.category_name ?? item.title ?? String(item.id ?? ""));
+};
+
 function ArticleSection() {
     const [posts, setPosts] = useState([]);
-    const [page, setPage] = useState(1)
-    const [hasMore, setHasMore] = useState(true)
+    const [categories, setCategories] = useState(["Highlight"]);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState("Highlight");
-    const [searchKeyword, setSearchKeyword] = useState("")
-    const [isLoading, setIsLoading] = useState(false)
+    const [searchKeyword, setSearchKeyword] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
+
     const searchRef = useRef(null);
 
     const [showSuggestion, setShowSuggestion] = useState(false);
-    const [suggestionPosts, setSuggestionPosts] = useState([])
+    const [suggestionPosts, setSuggestionPosts] = useState([]);
     const [hasSearched, setHasSearched] = useState(false);
 
-
-    const categories = [
-        "Highlight",
-        "Quality",
-        "Compliance",
-        "Production",
-        "Maintenance",
-        "ProblemSolving",
-        "Lean"
-    ];
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await axios.get(`${API_BASE_URL}/categories`);
+                const names = parseCategoriesResponse(response);
+                setCategories(["Highlight", ...names]);
+            } catch {
+                setCategories(["Highlight"]);
+            }
+        };
+        fetchCategories();
+    }, []);
 
     const fetchByKeyword = async () => {
         try {
@@ -51,7 +61,7 @@ function ArticleSection() {
             }
             )
             
-            setSuggestionPosts(response.data.posts)
+            setSuggestionPosts(response.data?.posts ?? [])
         } catch (error) {
             console.log("fetchSugeestion: ", error)
         } finally {
@@ -71,17 +81,16 @@ function ArticleSection() {
             }
             );
 
+            const postsData = response.data?.posts ?? [];
             if (page === 1) {
-                setPosts(response.data.posts)
+                setPosts(postsData);
             } else {
-                setPosts((prevPosts) => [...prevPosts, ...response.data.posts])
+                setPosts((prevPosts) => [...(prevPosts ?? []), ...postsData]);
             }
 
-            if (response.data.currentPage >= response.data.totalPages) {
+            if ((response.data?.currentPage ?? 0) >= (response.data?.totalPages ?? 1)) {
                 setHasMore(false);
             } else { setHasMore(true) }
-            console.log(response.data)
-
         } catch (error) {
             console.log("fetchPosts: ", error)
 
@@ -204,7 +213,7 @@ function ArticleSection() {
             <div className="flex flex-col w-full 2xl:grid 2xl:grid-cols-2 2xl:justify-items-stretch pt-[24px] px-[16px] 2xl:px-0 gap-[48px] 2xl:gap-[20px] caret-transparent">
                 <>
 
-                    {posts.map((blog) => (
+                    {(posts ?? []).map((blog) => (
                         <BlogCard
                             key={blog.id}
                             id={blog.id}

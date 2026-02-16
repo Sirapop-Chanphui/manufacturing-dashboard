@@ -1,6 +1,7 @@
 import { formatDateEn } from "@/utils/formatDate";
 
 const ArticleHeader = ({ article }) => {
+    const dateStr = article?.date ?? article?.created_at;
     return (
         <>
             <div className="flex items-center 2xl:pb-[16px] gap-[16px]">
@@ -8,11 +9,11 @@ const ArticleHeader = ({ article }) => {
                     {article.category}
                 </span>
                 <span className="text-body-1 text-neutral-400">
-                    {formatDateEn(article.date)}
+                {formatDateEn(dateStr)}
                 </span>
             </div>
 
-            <h1 className="text-headline-3 text-neutral-600 2xl:pb-[48px]">
+            <h1 className="text-headline-3 text-neutral-600">
                 {article.title}
             </h1>
         </>

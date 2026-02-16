@@ -1,52 +1,61 @@
-import { Search, Pencil, Trash2, Plus, ChevronDown } from "lucide-react";
 import Button from "@/components/common/Button";
-import { useState } from "react";
-import { toast } from "sonner"
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
+import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
 
-import { useNavigate } from "react-router-dom";
-
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function AdminEditCategory() {
-    const [input, setInput] = useState("")
-
-
+    const { state } = useLocation();
+    const categoryFromState = state?.category;
     const navigate = useNavigate();
+
+    const [input, setInput] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    useEffect(() => {
+        if (!categoryFromState) {
+            navigate("/login/admin/category-management", { replace: true });
+            return;
+        }
+        setInput(categoryFromState.name ?? "");
+    }, [categoryFromState, navigate]);
+
+    const handleSave = async () => {
+        if (!input.trim()) {
+            toast.error("Please enter a category name");
+            return;
+        }
+        if (!categoryFromState?.id) return;
+        try {
+            setIsSubmitting(true);
+            await axios.put(`${API_BASE_URL}/admin/categories/${categoryFromState.id}`, {
+                name: input.trim(),
+            });
+            toast.success("Category updated successfully");
+            navigate("/login/admin/category-management");
+        } catch (err) {
+            toast.error(err.response?.data?.message ?? "Failed to update category");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    if (!categoryFromState) {
+        return (
+            <div className="min-h-screen bg-neutral-100 flex items-center justify-center">
+                <p className="text-body-1 text-neutral-400">Redirecting...</p>
+            </div>
+        );
+    }
 
     return (
         <div className="flex bg-neutral-100 min-h-screen">
-
             <main className="flex-1 flex-col">
-                {/* Header */}
-                <div className="flex flex-row justify-between items-center px-[60px] py-[24px] border-b border-neutral-300 ">
-                    <h2 className="text-headline-3 font-semibold">Create category</h2>
-                    <Button buttonText="Save" buttonStyle="primary" className="flex flex-row"
-                        onClick={() => {
-                            if (!input.trim()) return;
-                            navigate("/login/admin/category-management")
-                            toast.custom((t) => (
-                                <div className="flex w-[700px] items-start gap-[12px] rounded-[8px] bg-brand-green p-4 shadow-lg relative">
-
-                                    <div className="flex flex-col gap-1">
-                                        <p className="text-headline-4 text-white">
-                                            Create category
-                                        </p>
-                                        <p className="text-body-2 text-white">
-                                            Category has been successfully created.
-                                        </p>
-                                    </div>
-                                    <button
-                                        onClick={() => toast.dismiss(t)}
-                                        className="absolute top-4 right-6 text-white opacity-80 hover:opacity-100"
-                                        aria-label="Close"
-                                    >
-                                        ✕
-                                    </button>
-                                </div>
-                            ), {
-                                duration: 5000,
-                            });
-                        }} />
+                <div className="flex items-center justify-between px-[60px] py-[24px] border-b border-neutral-300">
+                    <h2 className="text-headline-3 font-semibold">Edit category</h2>
+                    <Button buttonText="Save" buttonStyle="primary" className="flex flex-row" onClick={handleSave} disabled={isSubmitting} />
                 </div>
 
                 <div className="flex flex-col pt-[40px] px-[60px] pb-[120px] gap-[4px]">
@@ -57,19 +66,13 @@ function AdminEditCategory() {
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             placeholder="Category name"
-                            className="w-full py-[12px] pr-[12px] pl-[32px] rounded-[8px] border border-neutral-300 bg-white text-body-1 focus:outline-none"
+                            className="w-full py-[12px] pr-[12px] pl-[32px] rounded-[8px] border border-neutral-300 bg-white text-body-1 focus:outline-none mt-2 block"
                         />
                     </div>
                 </div>
-            </main >
-
-
-        </div >
+            </main>
+        </div>
     );
 }
 
 export default AdminEditCategory;
-
-
-
-
