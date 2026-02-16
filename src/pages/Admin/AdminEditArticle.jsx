@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ChevronDown, Trash2 } from "lucide-react";
 import Button from "@/components/common/Button";
 import { toast } from "sonner";
@@ -7,6 +7,8 @@ import axios from "axios";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1761839259112-aaea03db3633?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
 
 const CATEGORY_MAP = {
     1: "Quality", 2: "Compliance", 3: "Production", 4: "Maintenance",
@@ -33,12 +35,37 @@ function AdminEditArticle() {
     const [intro, setIntro] = useState("");
     const [content, setContent] = useState("");
     const [image, setImage] = useState(PLACEHOLDER_IMAGE);
+    const [imageFile, setImageFile] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [openDelete, setOpenDelete] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const fileInputRef = useRef(null);
 
     const articleId = articleFromState?.id;
+
+    const handleFileChange = (event) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+        if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+            toast.error("Please upload a valid image (JPEG, PNG, GIF, WebP).");
+            return;
+        }
+        if (file.size > MAX_IMAGE_SIZE) {
+            toast.error("Image must be smaller than 5MB.");
+            return;
+        }
+        setImageFile({ file });
+        setImagePreview(URL.createObjectURL(file));
+    };
+
+    const handleRemoveImage = () => {
+        if (imagePreview) URL.revokeObjectURL(imagePreview);
+        setImageFile(null);
+        setImagePreview(null);
+        if (fileInputRef.current) fileInputRef.current.value = "";
+    };
 
     useEffect(() => {
         if (!articleFromState?.id) {
@@ -83,8 +110,11 @@ function AdminEditArticle() {
         fetchCategories();
     }, [articleId, articleFromState, navigate]);
 
+    useEffect(() => () => {
+        if (imagePreview) URL.revokeObjectURL(imagePreview);
+    }, [imagePreview]);
+
     const handleSave = async (type) => {
-        const status = type === "draft" ? "Draft" : "Published";
         if (!title.trim()) {
             toast.error("Please enter a title");
             return;
@@ -93,17 +123,25 @@ function AdminEditArticle() {
             toast.error("Please select a category");
             return;
         }
+        const categoryObj = categories.find((c) => c.name === category);
+        const categoryId = categoryObj?.id ?? category;
+        const statusId = type === "draft" ? 1 : 3; // 1=Draft, 3=Published
         try {
             setIsSubmitting(true);
-            await axios.put(`${API_BASE_URL}/admin/posts/${articleId}`, {
-                title: title.trim(),
-                image,
-                category,
-                description: intro.trim() || title.trim(),
-                content: content.trim() || "",
-                status,
+            const formData = new FormData();
+            formData.append("title", title.trim());
+            formData.append("category_id", categoryId);
+            formData.append("description", intro.trim() || title.trim());
+            formData.append("content", content.trim() || "");
+            formData.append("status_id", statusId);
+            if (imageFile?.file) {
+                formData.append("imageFile", imageFile.file);
+            }
+
+            await axios.put(`${API_BASE_URL}/admin/posts/${articleId}`, formData, {
+                headers: { "Content-Type": "multipart/form-data" },
             });
-            toast.success(status === "Draft" ? "Article saved as draft" : "Article updated and published");
+            toast.success(type === "draft" ? "Article saved as draft" : "Article updated and published");
             navigate("/login/admin/article-management");
         } catch (err) {
             toast.error(err.response?.data?.message ?? "Failed to update article");
@@ -143,7 +181,7 @@ function AdminEditArticle() {
 
                 <div className="flex gap-3">
                     <Button onClick={() => handleSave("draft")} buttonText="Save as draft" buttonStyle="secondary" disabled={isSubmitting} />
-                    <Button onClick={() => handleSave("publish")} buttonText="Save" buttonStyle="primary" disabled={isSubmitting} />
+                    <Button onClick={() => handleSave("publish")} buttonText="Save and publish" buttonStyle="primary" disabled={isSubmitting} />
                 </div>
             </div>
 
@@ -152,9 +190,43 @@ function AdminEditArticle() {
                     <label className="block text-body-1 text-neutral-400 mb-2">Thumbnail image</label>
                     <div className="flex items-center gap-6">
                         <div className="w-[460px] h-[260px] rounded-lg bg-neutral-200 flex items-center justify-center overflow-hidden">
-                            <img src={image} alt={title || "Article"} className="w-full h-full object-cover" />
+                            {imagePreview ? (
+                                <img
+                                    src={imagePreview}
+                                    alt="Thumbnail preview"
+                                    className="w-full h-full object-cover object-center"
+                                />
+                            ) : (
+                                <img
+                                    src={image || PLACEHOLDER_IMAGE}
+                                    alt={title || "Article"}
+                                    className="w-full h-full object-cover object-center"
+                                />
+                            )}
                         </div>
-                        <Button buttonText="Upload thumbnail image" buttonStyle="secondary" className="self-end" disabled />
+                        <div className="flex flex-col gap-2 self-end">
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept="image/jpeg,image/png,image/gif,image/webp"
+                                onChange={handleFileChange}
+                                className="hidden"
+                            />
+                            <Button
+                                buttonText="Upload thumbnail image"
+                                buttonStyle="secondary"
+                                onClick={() => fileInputRef.current?.click()}
+                            />
+                            {imageFile && (
+                                <button
+                                    type="button"
+                                    onClick={handleRemoveImage}
+                                    className="text-body-2 text-neutral-400 hover:text-neutral-600 underline hover:cursor-pointer"
+                                >
+                                    Remove image
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </div>
 
