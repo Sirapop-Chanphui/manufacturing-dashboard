@@ -3,7 +3,7 @@ name: Deploy to Ubuntu with PM2
 on:
   push:
     branches:
-      - dev
+      - main
       # เพิ่ม branch อื่นถ้าต้องการ deploy จาก branch นั้น
       # - feature/uploadfile
 
