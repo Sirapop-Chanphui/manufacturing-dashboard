@@ -51,8 +51,9 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          source: "dist/*"
-          target: "${{ secrets.APP_DIR }}/dist"
+          # ใช้โฟลเดอร์ dist ตรง ๆ แทน pattern dist/* เพื่อไม่ให้ tar ว่าง
+          source: "dist"
+          target: "${{ secrets.APP_DIR }}"
 
       - name: Copy ecosystem config to server via SCP
         uses: appleboy/scp-action@v0.1.7
