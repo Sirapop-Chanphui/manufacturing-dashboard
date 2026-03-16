@@ -2,10 +2,10 @@ module.exports = {
   apps: [
     {
       name: "manufacturing-blog",
-      script: "serve",
-      // ใช้โหมด SPA และให้ serve ใช้พอร์ตดีฟอลต์ (3000)
-      // พอร์ต 3000 ตรงกับที่ nginx proxy ไปหาอยู่แล้ว
-      args: "-s dist",
+      // ชี้ไปที่ binary ของ serve ที่ติดตั้งแบบ global เพื่อหลีกเลี่ยง pm2 serve API
+      script: "/usr/bin/serve",
+      // โหมด SPA และระบุพอร์ต 3000 ชัดเจน
+      args: "-s dist -l 3000",
       cwd: __dirname,
       env: {
         NODE_ENV: "production",
