@@ -3,7 +3,9 @@ module.exports = {
     {
       name: "manufacturing-blog",
       script: "serve",
-      args: "-s dist -l 3000",
+      // ใช้โหมด SPA และให้ serve ใช้พอร์ตดีฟอลต์ (3000)
+      // พอร์ต 3000 ตรงกับที่ nginx proxy ไปหาอยู่แล้ว
+      args: "-s dist",
       cwd: __dirname,
       env: {
         NODE_ENV: "production",
