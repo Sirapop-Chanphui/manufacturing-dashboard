@@ -1,6 +1,13 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
 
 @theme {
+  /* Custom Breakpoints */
+  --breakpoint-2xl: 1440px;
+
   /* Font Family - Set as default */
   --font-family-sans: "Poppins", sans-serif;
 
@@ -16,23 +23,30 @@
   --font-weight-headline: 600; /* semibold */
   --font-weight-body: 500; /* medium */
 
-  /* Base / Neutral */
-  --color-brown-600: #26231E;
-  --color-brown-500: #43403B;
-  --color-brown-400: #75716B;
-  --color-brown-300: #DAD6D1;
-  --color-brown-200: #EFEEEB;
-  --color-brown-100: #F9F8F6;
-  --color-white: #FFFFFF;
+  /* Line Height */
+  --line-height-headline-1: 60px;
+  --line-height-headline-2: 48px;
+  --line-height-headline-3: 32px;
+  --line-height-headline-4: 28px;
+  --line-height-body-1: 24px;
+  --line-height-body-2: 22px;
+  --line-height-body-3: 20px;
+  /* Letter Spacing */
 
+  /* Base / Neutral */
+  --color-neutral-600: #1f1f1f; /* สำหรับข้อความหลัก, modern dark */
+  --color-neutral-500: #3a3a3a; /* สำหรับ hover text */
+  --color-neutral-400: #6b6b6b; /* สำหรับ secondary text */
+  --color-neutral-300: #d1d1d1; /* สำหรับ border, subtle bg */
+  --color-neutral-200: #f0f0f0; /* สำหรับ container background */
+  --color-neutral-100: #fafafa; /* สำหรับ card background */
+  --color-white: #ffffff;
 
   /* Brand colors */
-  --color-brand-orange: #F2B68C;
-  --color-brand-green: #12B279;
-  --color-brand-green-light: #D7F2E9;
-  --color-brand-red: #EB5164;
-
-
+  --color-brand-orange: #f2b68c;
+  --color-brand-green: #12b279;
+  --color-brand-green-light: #d7f2e9;
+  --color-brand-red: #eb5164;
 }
 
 /* Typography Utility Classes */
@@ -40,37 +54,127 @@
   .text-headline-1 {
     font-size: var(--font-size-headline-1);
     font-weight: var(--font-weight-headline);
+    line-height: var(--line-height-headline-1);
   }
 
   .text-headline-2 {
     font-size: var(--font-size-headline-2);
     font-weight: var(--font-weight-headline);
+    line-height: var(--line-height-headline-2);
   }
 
   .text-headline-3 {
     font-size: var(--font-size-headline-3);
     font-weight: var(--font-weight-headline);
+    line-height: var(--line-height-headline-3);
   }
 
   .text-headline-4 {
     font-size: var(--font-size-headline-4);
     font-weight: var(--font-weight-headline);
+    line-height: var(--line-height-headline-4);
   }
 
   .text-body-1 {
     font-size: var(--font-size-body-1);
     font-weight: var(--font-weight-body);
+    line-height: var(--line-height-body-1);
   }
 
   .text-body-2 {
     font-size: var(--font-size-body-2);
     font-weight: var(--font-weight-body);
+    line-height: var(--line-height-body-2);
   }
 
   .text-body-3 {
     font-size: var(--font-size-body-3);
     font-weight: var(--font-weight-body);
+    line-height: var(--line-height-body-3);
   }
+
+}
+/* mark down styles */
+.markdown {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.markdown :is(h2) {
+  margin-top: 32px;
+  margin-bottom: 12px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.markdown :is(h3, h4, h5, h6) {
+  margin-top: 32px;
+  margin-bottom: 12px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.markdown p:not(:is(h2, h3, h4, h5, h6) + p) {
+  margin-top: 22px;
+}
+
+.markdown :is(ul, ol) {
+  list-style-position: outside;
+}
+
+.markdown :is(ul) {
+  list-style-type: "•";
+}
+
+.markdown :is(ol) {
+  list-style-type: decimal;
+  padding-left: 20px;
+}
+
+.markdown :is(a) {
+  text-decoration: underline;
+}
+
+.markdown :is(a):hover {
+  text-decoration: underline;
+  color: #726d67;
+  cursor: pointer;
+}
+
+.markdown :is(ul) li {
+  margin-block: 8px;
+  padding-inline-start: 8px;
+  padding-left: 5px;
+  margin-left: 10px;
+}
+
+.markdown :is(ol) li {
+  margin-block: 8px;
+  padding-inline-start: 8px;
+  padding-left: 3px;
+  margin-left: 10px;
+}
+
+.markdown :is(blockquote) {
+  border-left: 3px solid #26231e;
+  margin: 1.5em 10px;
+  padding-left: 10px;
+  font-style: italic;
+}
+
+.markdown :is(hr) {
+  border: none;
+  border-top: 2.5px solid #d1d5db;
+  margin: 1.5em 0;
+  width: 30%;
+}
+
+.markdown img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 2em 0;
+  border-radius: 12px;
 }
 
 /* Base styles */
@@ -79,4 +183,57 @@ body {
   background-color: #f5f5f5;
   margin: 0;
   padding: 0;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

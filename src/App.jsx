@@ -1,101 +1,72 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from "sonner";
+
+import UserLayout from "./layouts/UserLayout";
+import AdminLayout from "./layouts/AdminLayout";
+
+import HomePage from "./pages/HomePage";
+import ArticleDetailPage from "./pages/ArticleDetailPage";
+import SignUpPage from "./pages/SignUpPage";
+import RegistrationSuccess from "./pages/RegistrationSuccessPage";
+import LoginPage from "./pages/LoginPage";
+import NotFound from "./pages/NotFound";
+import ProfilePage from "./pages/ProfilePage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
+import AdminArticleManagement from "./pages/Admin/AdminArticleManagement";
+import AdminCreateArticle from "./pages/Admin/AdminCreateArticle";
+import AdminEditArticle from "./pages/Admin/AdminEditArticle";
+import AdminCategoryManagement from "./pages/Admin/AdminCategoryManagement";
+import AdminCreateCategory from "./pages/Admin/AdminCreateCategory";
+import AdminEditCategory from "./pages/Admin/AdminEditCategory";
+import AdminProfile from "./pages/Admin/AdminProfile";
+import AdminNotification from "./pages/Admin/AdminNotification";
+import AdminResetPassword from "./pages/Admin/AdminResetPassword";
+import AdminRoute from "./components/Admin/AdminRoute";
+import { AuthProvider } from "./context/authentication";
+
+
 function App() {
   return (
-    <article className="min-h-screen p-8 bg-white relative">
+    <BrowserRouter>
+      <AuthProvider>
+        <Toaster position="bottom-right" richColors />
 
-      {/* Main content - Two columns */}
-      <section className="w-full h-full flex flex-row gap-12 justify-center items-center">
-        <section className="space-y-8">
-          <h2 className="text-headline-3 text-brown-600">Colors</h2>
+        <Routes>
+          <Route path="*" element={<NotFound />} />
 
-          {/* Base Colors */}
-          <div className="space-y-4">
-            <h3 className="text-body-1 text-brown-500  tracking-wide">
-              BASE
-            </h3>
-            <div className="flex flex-wrap gap-4">
-              <div className="space-y-2 min-w-[120px]">
-                <div className="w-full h-20 rounded border border-brown-300 bg-brown-600"></div>
-                <p className="text-sm text-brown-600">Brown 600</p>
-                <p className="text-xs text-brown-400 font-mono">#26231E</p>
-              </div>
-              <div className="space-y-2 min-w-[120px]">
-                <div className="w-full h-20 rounded border border-brown-300 bg-brown-500"></div>
-                <p className="text-sm text-brown-600">Brown 500</p>
-                <p className="text-xs text-brown-400 font-mono">#43403B</p>
-              </div>
-              <div className="space-y-2 min-w-[120px]">
-                <div className="w-full h-20 rounded border border-brown-300 bg-brown-400"></div>
-                <p className="text-sm text-brown-600">Brown 400</p>
-                <p className="text-xs text-brown-400 font-mono">#75716B</p>
-              </div>
-              <div className="space-y-2 min-w-[120px]">
-                <div className="w-full h-20 rounded border border-brown-300 bg-brown-300"></div>
-                <p className="text-sm text-brown-600">Brown 300</p>
-                <p className="text-xs text-brown-400 font-mono">#DAD6D1</p>
-              </div>
-              <div className="space-y-2 min-w-[120px]">
-                <div className="w-full h-20 rounded border border-brown-300 bg-brown-200"></div>
-                <p className="text-sm text-brown-600">Brown 200</p>
-                <p className="text-xs text-brown-400 font-mono">#EFEEEB</p>
-              </div>
-              <div className="space-y-2 min-w-[120px]">
-                <div className="w-full h-20 rounded border border-brown-300 bg-brown-100"></div>
-                <p className="text-sm text-brown-600">Brown 100</p>
-                <p className="text-xs text-brown-400 font-mono">#F9F8F6</p>
-              </div>
-              <div className="space-y-2 min-w-[120px]">
-                <div className="w-full h-20 rounded border border-brown-300 bg-white"></div>
-                <p className="text-sm text-brown-600">White</p>
-                <p className="text-xs text-brown-400 font-mono">#FFFFFF</p>
-              </div>
-            </div>
-          </div>
+          {/* USER LAYOUT */}
+          <Route element={<UserLayout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/signup/success" element={<RegistrationSuccess />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/login/profile" element={<ProfilePage />} />
+            <Route path="/login/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/article/:id" element={<ArticleDetailPage />} />
+          </Route>
 
-          {/* Brand Colors */}
-          <div className="space-y-4">
-            <h3 className="text-body-1 text-brown-500 tracking-wide">
-              BRAND
-            </h3>
-            <div className="flex flex-wrap gap-4">
-              <div className="space-y-2 min-w-[120px]">
-                <div className="w-full h-20 rounded border border-brown-300 bg-brand-orange"></div>
-                <p className="text-sm text-brown-600">Orange</p>
-                <p className="text-xs text-brown-400 font-mono">#F2B68C</p>
-              </div>
-              <div className="space-y-2 min-w-[120px]">
-                <div className="w-full h-20 rounded border border-brown-300  bg-brand-green"></div>
-                <p className="text-sm text-brown-600">Green</p>
-                <p className="text-xs text-brown-400 font-mono">#12B279</p>
-              </div>
-              <div className="space-y-2 min-w-[120px]">
-                <div className="w-full h-20 rounded border border-brown-300  bg-brand-green-light"></div>
-                <p className="text-sm text-brown-600">Green-light</p>
-                <p className="text-xs text-brown-400 font-mono">#D7F2E9</p>
-              </div>
-              <div className="space-y-2 min-w-[120px]">
-                <div className="w-full h-20 rounded border border-brown-300  bg-brand-red"></div>
-                <p className="text-sm text-brown-600">Red</p>
-                <p className="text-xs text-brown-400 font-mono">#EB5164</p>
-              </div>
-            </div>
-          </div>
-        </section>
+          {/* ADMIN: AdminRoute = auth (SoC), AdminLayout = UI only */}
+          <Route path="/login/admin" element={<AdminRoute />}>
+            <Route element={<AdminLayout />}>
+            <Route path="article-management">
+              <Route index element={<AdminArticleManagement />} />
+              <Route path="create-article" element={<AdminCreateArticle />} />
+              <Route path="edit-article" element={<AdminEditArticle />} />
+            </Route>
+            <Route path="category-management">
+              <Route index element={<AdminCategoryManagement />} />
+              <Route path="create-category" element={<AdminCreateCategory />} />
+              <Route path="edit-category" element={<AdminEditCategory />} />
+            </Route>
+            <Route path="profile" element={<AdminProfile />} />
+            <Route path="notification" element={<AdminNotification />} />
+            <Route path="reset-password" element={<AdminResetPassword />} />
+            </Route>
+          </Route>
 
-        {/* Right Column: Fonts */}
-        <section className="space-y-8">
-          <h2 className="text-headline-3 text-brown-600">Fonts</h2>
-          <div className="space-y-4">
-            <p className="text-headline-1 text-brown-600">Headline 1</p>
-            <p className="text-headline-2 text-brown-600">Headline 2</p>
-            <p className="text-headline-3 text-brown-600">Headline 3</p>
-            <p className="text-headline-4 text-brown-600">Headline 4</p>
-            <p className="text-body-1 text-brown-600">Body 1</p>
-            <p className="text-body-2 text-brown-600">Body 2</p>
-            <p className="text-body-3 text-brown-600">Body 3</p>
-          </div>
-        </section>
-      </section>
-    </article>
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 

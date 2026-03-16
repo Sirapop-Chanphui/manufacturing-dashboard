@@ -1,0 +1,73 @@
+name: Deploy to Ubuntu with PM2
+
+on:
+  push:
+    branches:
+      - main
+      # เพิ่ม branch อื่นถ้าต้องการ deploy จาก branch นั้น
+      # - feature/uploadfile
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Copy files to server via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "dist/*"
+          target: "${{ secrets.APP_DIR }}/dist"
+
+      - name: Restart app with PM2 (ecosystem)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd ${{ secrets.APP_DIR }}
+            # ถ้ามี process เดิมอยู่ให้ reload จาก ecosystem, ถ้าไม่มีก็ start จาก ecosystem
+            if pm2 describe ${{ secrets.PM2_APP_NAME }} > /dev/null; then
+              pm2 reload ecosystem.config.js --only ${{ secrets.PM2_APP_NAME }}
+            else
+              pm2 start ecosystem.config.js --only ${{ secrets.PM2_APP_NAME }}
+            fi
+
+            pm2 save
