@@ -63,11 +63,11 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd ${{ secrets.APP_DIR }}
-            # ถ้ามี process เดิมอยู่ให้ reload จาก ecosystem, ถ้าไม่มีก็ start จาก ecosystem
+            # ถ้ามี process เดิมอยู่ให้ reload จาก ecosystem (.cjs), ถ้าไม่มีก็ start จาก ecosystem (.cjs)
             if pm2 describe ${{ secrets.PM2_APP_NAME }} > /dev/null; then
-              pm2 reload ecosystem.config.js --only ${{ secrets.PM2_APP_NAME }}
+              pm2 reload ecosystem.config.cjs --only ${{ secrets.PM2_APP_NAME }}
             else
-              pm2 start ecosystem.config.js --only ${{ secrets.PM2_APP_NAME }}
+              pm2 start ecosystem.config.cjs --only ${{ secrets.PM2_APP_NAME }}
             fi
 
             pm2 save
