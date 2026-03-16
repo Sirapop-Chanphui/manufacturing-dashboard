@@ -28,10 +28,11 @@ function AdminEditCategory() {
             return;
         }
         if (!categoryFromState?.id) return;
+        const payload = { name: input.trim() };
         try {
             setIsSubmitting(true);
-            await axios.put(`${API_BASE_URL}/admin/categories/${categoryFromState.id}`, {
-                name: input.trim(),
+            await axios.put(`${API_BASE_URL}/admin/categories/${categoryFromState.id}`, payload, {
+                headers: { "Content-Type": "application/json" },
             });
             toast.success("Category updated successfully");
             navigate("/login/admin/category-management");

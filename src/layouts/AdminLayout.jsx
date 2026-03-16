@@ -6,13 +6,14 @@ import AdminSidebar from "../components/Admin/AdminSidebar";
  */
 function AdminLayout() {
     return (
-        <div className="flex">
+        <div>
             <AdminSidebar />
-            <main className="flex-1">
+            <main className="ml-[280px] min-h-screen">
                 <Outlet />
             </main>
         </div>
     );
 }
+
 
 export default AdminLayout;
