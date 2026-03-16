@@ -49,7 +49,7 @@ function AdminSidebar() {
   ];
 
   return (
-    <aside className="w-[280px] min-h-screen bg-neutral-200 text-neutral-400 flex flex-col justify-between">
+    <aside className="fixed top-0 left-0 w-[280px] h-screen bg-neutral-200 text-neutral-400 flex flex-col justify-between">
       {/* TOP */}
       <div>
         <div
