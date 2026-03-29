@@ -22,7 +22,7 @@ function AdminCreateArticle() {
     const [categories, setCategories] = useState([]);
     const [category, setCategory] = useState("");
     const [title, setTitle] = useState("");
-    const [intro, setIntro] = useState("");
+    const [description, setDescription] = useState("");
     const [content, setContent] = useState("");
     const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
@@ -81,6 +81,14 @@ function AdminCreateArticle() {
             toast.error("Please select an image");
             return;
         }
+        if (!description.trim()) {
+            toast.error("Please enter a description");
+            return;
+        }
+        if (!content.trim()) {
+            toast.error("Please enter a content");
+            return;
+        }
         const categoryObj = categories.find((c) => c.name === category);
         const categoryId = categoryObj?.id ?? category;
         const statusId = type === "draft" ? 1 : 3; // 1=Draft, 3=Published
@@ -89,7 +97,7 @@ function AdminCreateArticle() {
             const formData = new FormData();
             formData.append("title", title.trim());
             formData.append("category_id", categoryId);
-            formData.append("description", intro.trim() || title.trim());
+            formData.append("description", description.trim() || title.trim());
             formData.append("content", content.trim() || "");
             formData.append("status_id", statusId);
             formData.append("imageFile", imageFile.file);
@@ -101,6 +109,7 @@ function AdminCreateArticle() {
             toast.success(type === "draft" ? "Article saved as draft" : "Article published successfully");
             navigate("/login/admin/article-management");
         } catch (err) {
+            console.log(err)
             toast.error(err.response?.data?.message ?? "Failed to create article");
         } finally {
             setIsSubmitting(false);
@@ -223,15 +232,15 @@ function AdminCreateArticle() {
                     />
                 </div>
 
-                {/* Introduction */}
+                {/* Description */}
                 <div className="mb-6">
                     <label className="block text-sm text-neutral-600 mb-2">
-                        Introduction (max 120 letters)
+                        Description (max 120 letters)
                     </label>
                     <textarea
-                        value={intro}
-                        onChange={(e) => setIntro(e.target.value)}
-                        placeholder="Introduction"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        placeholder="Description"
                         rows={3}
                         maxLength={120}
                         className="w-full border border-neutral-300 bg-white rounded-md px-4 py-2 text-sm resize-none focus:outline-none"
