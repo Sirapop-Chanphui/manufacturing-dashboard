@@ -9,7 +9,6 @@ function jwtInterceptor() {
                 Authorization: `Bearer ${window.localStorage.getItem("token")}`
             }
         } 
-        console.log(req)
         return req;
     });
 
@@ -19,8 +18,8 @@ function jwtInterceptor() {
         },
         (error) => {
             if (
-                error.response.status === 401 &&
-                error.response.statusText === "Unauthorized"
+                error.response?.status === 401 &&
+                error.response?.statusText === "Unauthorized"
             ) {
                 window.localStorage.removeItem("token");
                 window.location.replace("/login")
