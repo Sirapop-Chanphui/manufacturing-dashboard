@@ -50,7 +50,6 @@ function ArticleActions({ articleId, likes: initialLikes, onCopy, onRequireLogin
 
     const handleLike = async () => {
         if (!isAuthenticated) {
-            toast.info("Please log in to like this article");
             onRequireLogin?.();
             return;
         }
