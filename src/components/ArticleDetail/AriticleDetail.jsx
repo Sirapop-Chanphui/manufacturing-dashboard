@@ -20,13 +20,6 @@ const ArticleDetail = ({ articleId }) => {
     const [showLoginDialog, setShowLoginDialog] = useState(false);
     const { isAuthenticated } = useAuth();
 
-    const handleLike = () => {
-        if (!isAuthenticated) {
-            setShowLoginDialog(true);
-            return;
-        }
-    };
-
     const handleCopy = async () => {
         try {
             await navigator.clipboard.writeText(window.location.href);
@@ -109,10 +102,10 @@ const ArticleDetail = ({ articleId }) => {
                     </div>
                     <div className="-mx-[16px] 2xl:mt-[32px] 2xl:m-0">
                         <ArticleActions
-                            onLike={handleLike}
-                            onCopy={handleCopy}
                             articleId={article.id}
                             likes={article.likes_count}
+                            onCopy={handleCopy}
+                            onRequireLogin={() => setShowLoginDialog(true)}
                         />
                     </div>
                     <ArticleCommentSection
