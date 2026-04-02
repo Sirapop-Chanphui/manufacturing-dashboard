@@ -4,10 +4,9 @@ import Button from "@/components/common/Button";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { validateImageFile } from "@/utils/imageFileValidation";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
 
 const parseCategoriesResponse = (response) => {
     const raw = response?.data?.categories ?? response?.data?.data ?? response?.data ?? [];
@@ -33,12 +32,9 @@ function AdminCreateArticle() {
     const handleFileChange = (event) => {
         const file = event.target.files?.[0];
         if (!file) return;
-        if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-            toast.error("Please upload a valid image (JPEG, PNG, GIF, WebP).");
-            return;
-        }
-        if (file.size > MAX_IMAGE_SIZE) {
-            toast.error("Image must be smaller than 5MB.");
+        const result = validateImageFile(file);
+        if (!result.ok) {
+            toast.error(result.message);
             return;
         }
         setImageFile({ file });

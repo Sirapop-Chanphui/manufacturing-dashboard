@@ -1,15 +1,13 @@
 import { useRef, useState } from "react";
 import { Bell, ChevronDown, UserRound, LogOut, RotateCw, ExternalLink, Home } from "lucide-react";
-import man from "../../assets/img/men-and-cat.jpg"
 import { useNavigate } from "react-router-dom";
 import Button from "../common/Button";
+import ProfileAvatar from "@/components/common/ProfileAvatar";
 import { useClickOutside } from "@/utils/useClickOutside";
 import { Link } from "react-router-dom";
 import logohh from "../../assets/icons/logo-hh.svg";
 import NotificationCard from "./NotificationCard";
 import { notifications } from "@/data/notifications";
-
-const defaultAvatar = man;
 
 function DesktopMenu({
   isLoggedIn,
@@ -31,10 +29,10 @@ function DesktopMenu({
     user?.name?.trim() ||
     user?.username?.trim() ||
     (getUserLoading ? "…" : "User");
-  const avatarSrc =
+  const avatarImageUrl =
     user?.profile_pic && String(user.profile_pic).trim() !== ""
       ? user.profile_pic
-      : defaultAvatar;
+      : null;
 
   const handleNavigate = (path) => {
     navigate(path);
@@ -90,10 +88,10 @@ function DesktopMenu({
             onClick={() => { setIsOpenNoti(false); onToggle(); }}
             className="flex items-center gap-[8px] focus:outline-none hover:cursor-pointer"
           >
-            <img
-              src={avatarSrc}
-              className="w-[48px] h-[48px] rounded-full object-cover"
+            <ProfileAvatar
+              imageUrl={avatarImageUrl}
               alt={`${displayName} profile picture`}
+              size={48}
             />
             <span className="text-body-1 text-neutral-500">{displayName}</span>
             <ChevronDown
