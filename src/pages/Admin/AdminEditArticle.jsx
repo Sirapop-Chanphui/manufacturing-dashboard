@@ -4,11 +4,10 @@ import Button from "@/components/common/Button";
 import { toast } from "sonner";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
+import { validateImageFile } from "@/utils/imageFileValidation";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1761839259112-aaea03db3633?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
-const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
 
 const CATEGORY_MAP = {
     1: "Quality", 2: "Compliance", 3: "Production", 4: "Maintenance",
@@ -48,12 +47,9 @@ function AdminEditArticle() {
     const handleFileChange = (event) => {
         const file = event.target.files?.[0];
         if (!file) return;
-        if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-            toast.error("Please upload a valid image (JPEG, PNG, GIF, WebP).");
-            return;
-        }
-        if (file.size > MAX_IMAGE_SIZE) {
-            toast.error("Image must be smaller than 5MB.");
+        const result = validateImageFile(file);
+        if (!result.ok) {
+            toast.error(result.message);
             return;
         }
         setImageFile({ file });

@@ -1,10 +1,5 @@
 import React from "react";
-
-const DEFAULT_AVATAR =
-    "data:image/svg+xml," +
-    encodeURIComponent(
-        `<svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="22" fill="#e5e5e5"/><text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" fill="#737373" font-size="14" font-family="system-ui,sans-serif">?</text></svg>`,
-    );
+import ProfileAvatar from "@/components/common/ProfileAvatar";
 
 function formatCommentDate(iso) {
     if (!iso) return "";
@@ -27,15 +22,17 @@ function CommentCard({ comment }) {
     const dateLabel = comment.created_at
         ? formatCommentDate(comment.created_at)
         : comment.date ?? "";
-    const avatarSrc = comment.profile_pic ?? comment.avatar ?? DEFAULT_AVATAR;
+    const rawPic = comment.profile_pic ?? comment.avatar;
+    const avatarImageUrl =
+        rawPic && String(rawPic).trim() !== "" ? rawPic : null;
 
     return (
         <div className="flex flex-col gap-[16px] pb-[24px] border-b border-neutral-300">
             <div className="flex items-center gap-[12px]">
-                <img
-                    src={avatarSrc}
-                    alt=""
-                    className="h-[44px] w-[44px] shrink-0 rounded-full object-cover"
+                <ProfileAvatar
+                    imageUrl={avatarImageUrl}
+                    alt={`${username} profile picture`}
+                    size={44}
                 />
 
                 <div className="flex flex-col">
