@@ -1,16 +1,26 @@
 import ProfileMobile from "@/components/membermanagement/Profile/ProfileMobile";
 import ProfileDesktop from "@/components/membermanagement/Profile/ProfileDesktop";
-import { useState } from "react";
-import { toast } from "sonner"
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { useAuth } from "@/context/authentication";
 
 function ProfilePage() {
-  const profile = {
-    name: "Moodeng ja",
-    username: "moodeng.cute",
-    email: "moodeng.cute@gmail.com",
-  };
+  const { user, state } = useAuth();
 
-  const [values, setValues] = useState(profile);
+  const [values, setValues] = useState({
+    name: "",
+    username: "",
+    email: "",
+  });
+
+  useEffect(() => {
+    if (!user) return;
+    setValues({
+      name: user.name ?? "",
+      username: user.username ?? "",
+      email: user.email ?? "",
+    });
+  }, [user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -45,17 +55,19 @@ function ProfilePage() {
   return (
     <>
       <ProfileDesktop
-        profile={profile}
         values={values}
         onChange={handleChange}
         onSubmit={handleSubmit}
-         />
+        user={user}
+        getUserLoading={state.getUserLoading}
+      />
       <div className="2xl:hidden">
         <ProfileMobile
-          profile={profile}
           values={values}
           onChange={handleChange}
           onSubmit={handleSubmit}
+          user={user}
+          getUserLoading={state.getUserLoading}
         />
       </div>
     </>

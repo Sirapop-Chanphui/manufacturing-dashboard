@@ -1,37 +1,70 @@
-import { useState } from "react";
-import { UserRound } from 'lucide-react';
-import { RotateCw } from 'lucide-react';
-import man from "@/assets/img/men-and-cat.jpg"
+import { UserRound, RotateCw } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import man from "@/assets/img/men-and-cat.jpg";
 import InputField from "@/components/common/InputField";
 import Button from "@/components/common/Button";
 
+const defaultAvatar = man;
 
+function ProfileMobile({ values, onChange, onSubmit, user, getUserLoading }) {
+  const location = useLocation();
+  const isProfileActive = location.pathname === "/login/profile";
+  const isResetActive = location.pathname === "/login/reset-password";
 
-function ProfileMobile({ values, onChange, onSubmit }) {
+  const avatarSrc =
+    user?.profile_pic && String(user.profile_pic).trim() !== ""
+      ? user.profile_pic
+      : defaultAvatar;
+  const displayName =
+    values.name?.trim() ||
+    values.username?.trim() ||
+    user?.name?.trim() ||
+    user?.username?.trim() ||
+    (getUserLoading ? "…" : "User");
 
   return (
     <div className="flex flex-col pt-[48px] bg-neutral-100 justify-center">
       <div>
-        <div className="flex flex-row ">
-          <div className="flex flex-row px-[16PX] py-[12px] gap-[12px]">
-            <UserRound className="h-[24px] w-[24px] text-neutral-400 stroke-[1px]" />
-            <span className="text-body-1 text-neutral-500">Profile</span></div>
-          <div className="flex flex-row px-[16PX] py-[12px] gap-[12px]">
-            <RotateCw className="h-[24px] w-[24px] text-neutral-300 stroke-[1px]" />
-            <span className="text-body-1 text-neutral-400">Reset password</span></div>
-        </div>
+        <nav className="flex flex-row" aria-label="Profile section">
+          <Link
+            to="/login/profile"
+            className="flex flex-row px-[16px] py-[12px] gap-[12px] items-center no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-400 rounded-[4px]"
+          >
+            <UserRound
+              className={`h-[24px] w-[24px] stroke-[1px] ${isProfileActive ? "text-neutral-400" : "text-neutral-300"}`}
+            />
+            <span
+              className={`text-body-1 ${isProfileActive ? "text-neutral-500" : "text-neutral-400"}`}
+            >
+              Profile
+            </span>
+          </Link>
+          <Link
+            to="/login/reset-password"
+            className="flex flex-row px-[16px] py-[12px] gap-[12px] items-center no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-400 rounded-[4px]"
+          >
+            <RotateCw
+              className={`h-[24px] w-[24px] stroke-[1px] ${isResetActive ? "text-neutral-400" : "text-neutral-300"}`}
+            />
+            <span
+              className={`text-body-1 ${isResetActive ? "text-neutral-500" : "text-neutral-400"}`}
+            >
+              Reset password
+            </span>
+          </Link>
+        </nav>
 
         <div className="flex flex-row items-center px-[16px] py-[24px] gap-[12px]">
           <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
             <img
-              src={man}
-              alt="avatar"
+              src={avatarSrc}
+              alt={`${displayName} profile picture`}
               className="w-full h-full object-cover"
             />
           </div>
 
           <div className="flex flex-row items-center gap-[16px]">
-            <span className="text-headline-4 text-neutral-400">Moodeng ja</span>
+            <span className="text-headline-4 text-neutral-400">{displayName}</span>
             <div className="flex h-[28px] w-px bg-neutral-300 "></div>
             <span className="text-headline-4 text-neutral-600">Profile</span>
           </div>
@@ -44,8 +77,8 @@ function ProfileMobile({ values, onChange, onSubmit }) {
         <div className="flex flex-col 2xl:flex-row items-center gap-[24px]">
           <div className="w-[120px] h-[120px] rounded-full overflow-hidden">
             <img
-              src={man}
-              alt="avatar"
+              src={avatarSrc}
+              alt={`${displayName} profile picture`}
               className="w-full h-full object-cover"
             />
           </div>

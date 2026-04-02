@@ -1,12 +1,24 @@
 import { useNavigate } from "react-router-dom";
 import { UserRound, RotateCw } from "lucide-react";
-import man from "@/assets/img/men-and-cat.jpg"
+import man from "@/assets/img/men-and-cat.jpg";
 import InputField from "@/components/common/InputField";
 import Button from "@/components/common/Button";
 
+const defaultAvatar = man;
 
-function ProfileDesktop({ values, onChange, onSubmit }) {
+function ProfileDesktop({ values, onChange, onSubmit, user, getUserLoading }) {
     const navigate = useNavigate();
+
+    const avatarSrc =
+        user?.profile_pic && String(user.profile_pic).trim() !== ""
+            ? user.profile_pic
+            : defaultAvatar;
+    const displayName =
+        values.name?.trim() ||
+        values.username?.trim() ||
+        user?.name?.trim() ||
+        user?.username?.trim() ||
+        (getUserLoading ? "…" : "User");
 
     return (
         <div className="hidden 2xl:flex flex-col w-full h-screen pt-[132px]  bg-neutral-100  items-center">
@@ -16,14 +28,14 @@ function ProfileDesktop({ values, onChange, onSubmit }) {
                 <div className="flex flex-row items-center px-[16px] py-[24px] gap-[12px]">
                     <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
                         <img
-                            src={man}
-                            alt="avatar"
+                            src={avatarSrc}
+                            alt={`${displayName} profile picture`}
                             className="w-full h-full object-cover"
                         />
                     </div>
 
                     <div className="flex flex-row items-center gap-[16px]">
-                        <span className="text-headline-4 text-neutral-400">Moodeng ja</span>
+                        <span className="text-headline-4 text-neutral-400">{displayName}</span>
                         <div className="flex h-[28px] w-px bg-neutral-300 "></div>
                         <span className="text-headline-4 text-neutral-600">Profile</span>
                     </div>
@@ -56,8 +68,8 @@ function ProfileDesktop({ values, onChange, onSubmit }) {
                         <div className="flex flex-col 2xl:flex-row items-center gap-[24px]">
                             <div className="w-[120px] h-[120px] rounded-full overflow-hidden">
                                 <img
-                                    src={man}
-                                    alt="avatar"
+                                    src={avatarSrc}
+                                    alt={`${displayName} profile picture`}
                                     className="w-full h-full object-cover"
                                 />
                             </div>

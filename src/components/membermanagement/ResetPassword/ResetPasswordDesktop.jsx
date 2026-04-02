@@ -1,12 +1,24 @@
-import { UserRound } from 'lucide-react';
-import { RotateCw } from 'lucide-react';
-import man from "@/assets/img/men-and-cat.jpg"
+import { UserRound, RotateCw } from "lucide-react";
+import man from "@/assets/img/men-and-cat.jpg";
 import InputField from "@/components/common/InputField";
 import Button from "@/components/common/Button";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/authentication";
 
-function ResetPasswordDesktop({ values, onChange, onSubmit}) {
+const defaultAvatar = man;
+
+function ResetPasswordDesktop({ values, onChange, onSubmit }) {
     const navigate = useNavigate();
+    const { user, state } = useAuth();
+
+    const avatarSrc =
+        user?.profile_pic && String(user.profile_pic).trim() !== ""
+            ? user.profile_pic
+            : defaultAvatar;
+    const displayName =
+        user?.name?.trim() ||
+        user?.username?.trim() ||
+        (state.getUserLoading ? "…" : "User");
 
     return (
         <div className="hidden 2xl:flex flex-col w-full h-screen pt-[132px]  bg-neutral-100  items-center">
@@ -16,14 +28,14 @@ function ResetPasswordDesktop({ values, onChange, onSubmit}) {
                 <div className="flex flex-row items-center px-[16px] py-[24px] gap-[12px]">
                     <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
                         <img
-                            src={man}
-                            alt="avatar"
+                            src={avatarSrc}
+                            alt={`${displayName} profile picture`}
                             className="w-full h-full object-cover"
                         />
                     </div>
 
                     <div className="flex flex-row items-center gap-[16px]">
-                        <span className="w-fit text-headline-4 text-neutral-400">Moodeng ja</span>
+                        <span className="w-fit text-headline-4 text-neutral-400">{displayName}</span>
                         <div className="flex h-[28px] w-px bg-neutral-300 "></div>
                         <span className="w-fit text-headline-4 text-neutral-600">Reset password</span>
                     </div>
