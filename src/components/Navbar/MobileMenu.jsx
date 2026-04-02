@@ -12,11 +12,30 @@ import hamburger from "../../assets/icons/icon-hamburger.svg";
 import NotificationCard from "./NotificationCard";
 
 
-function MobileMenu({ isLoggedIn, open, onToggle, onClose, onLogout }) {
+const defaultAvatar = man;
+
+function MobileMenu({
+  isLoggedIn,
+  open,
+  onToggle,
+  onClose,
+  onLogout,
+  user,
+  getUserLoading,
+}) {
   const navigate = useNavigate();
   const menuRef = useRef(null);
   const notiRef = useRef(null);
   const [isOpenNoti, setIsOpenNoti] = useState(false);
+
+  const displayName =
+    user?.name?.trim() ||
+    user?.username?.trim() ||
+    (getUserLoading ? "…" : "User");
+  const avatarSrc =
+    user?.profile_pic && String(user.profile_pic).trim() !== ""
+      ? user.profile_pic
+      : defaultAvatar;
 
   const handleNavigate = (path) => {
     navigate(path);
@@ -67,11 +86,11 @@ function MobileMenu({ isLoggedIn, open, onToggle, onClose, onLogout }) {
 
             <div className="flex flex-row items-center gap-[8px]">
               <img
-                src={man}
+                src={avatarSrc}
                 className="w-[48px] h-[48px] rounded-full object-cover"
-                alt="profile image"
+                alt={`${displayName} profile picture`}
               />
-              <span className="text-body-1 text-neutral-500">Moodang</span>
+              <span className="text-body-1 text-neutral-500">{displayName}</span>
             </div>
             <div ref={notiRef} className="relative flex justify-center items-center h-[48px] w-[48px] bg-white border border-neutral-200 rounded-full cursor-pointer">
               <div className="w-full h-full flex justify-center items-center" onClick={() => setIsOpenNoti((prev) => !prev)}>

@@ -19,6 +19,8 @@ function Navbar() {
           onToggle={() => setIsMobileMenuOpen(p => !p)}
           onClose={() => setIsMobileMenuOpen(false)}
           isLoggedIn={isLoggedIn}
+          user={state.user}
+          getUserLoading={state.getUserLoading}
           onLogout={logout}
         />
 
@@ -27,7 +29,9 @@ function Navbar() {
           onToggle={() => setIsDesktopMenuOpen(p => !p)}
           onClose={() => setIsDesktopMenuOpen(false)}
           isLoggedIn={isLoggedIn}
-          isAdmin ={isAdmin }
+          isAdmin={isAdmin}
+          user={state.user}
+          getUserLoading={state.getUserLoading}
           onLogout={logout}
         />
       </nav>

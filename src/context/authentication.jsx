@@ -28,7 +28,7 @@ function AuthProvider(props) {
         try {
           
             setState((prevState) => ({ ...prevState, getUserLoading: true }));
-            const response = await axios.get(`${API_BASE_URL}/auth/get-user`);
+            const response = await axios.get(`${API_BASE_URL}/user/get-user`);
             setState((prevState) => ({ ...prevState, user: response.data.data, getUserLoading: false, }));
         } catch (error) {
             setState((prevState) => ({ ...prevState, error: error.message, user: null, getUserLoading: false, }));

@@ -9,12 +9,32 @@ import logohh from "../../assets/icons/logo-hh.svg";
 import NotificationCard from "./NotificationCard";
 import { notifications } from "@/data/notifications";
 
-function DesktopMenu({ isLoggedIn, open, onToggle, onClose, onLogout, isAdmin }) {
+const defaultAvatar = man;
+
+function DesktopMenu({
+  isLoggedIn,
+  open,
+  onToggle,
+  onClose,
+  onLogout,
+  isAdmin,
+  user,
+  getUserLoading,
+}) {
   const navigate = useNavigate();
   const ref = useRef(null);
   const notiRef = useRef(null);
 
-  const [isOpenNoti, setIsOpenNoti] = useState(false)
+  const [isOpenNoti, setIsOpenNoti] = useState(false);
+
+  const displayName =
+    user?.name?.trim() ||
+    user?.username?.trim() ||
+    (getUserLoading ? "…" : "User");
+  const avatarSrc =
+    user?.profile_pic && String(user.profile_pic).trim() !== ""
+      ? user.profile_pic
+      : defaultAvatar;
 
   const handleNavigate = (path) => {
     navigate(path);
@@ -71,11 +91,11 @@ function DesktopMenu({ isLoggedIn, open, onToggle, onClose, onLogout, isAdmin })
             className="flex items-center gap-[8px] focus:outline-none hover:cursor-pointer"
           >
             <img
-              src={man}
+              src={avatarSrc}
               className="w-[48px] h-[48px] rounded-full object-cover"
-              alt="profile image"
+              alt={`${displayName} profile picture`}
             />
-            <span className="text-body-1 text-neutral-500">Moodang</span>
+            <span className="text-body-1 text-neutral-500">{displayName}</span>
             <ChevronDown
               className={`w-[16px] h-[16px] text-neutral-400 transition-transform ${open ? "rotate-180" : ""
                 }`}
