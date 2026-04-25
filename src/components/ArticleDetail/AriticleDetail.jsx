@@ -9,6 +9,7 @@ import ArticleDetailSkeleton from "./ArticleDetailSkeleton";
 
 import LoginRequiredDialog from "../common/LoginRequiredDialog"
 import { toast } from "sonner"
+import { useAuth } from "@/context/authentication";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -16,23 +17,8 @@ const ArticleDetail = ({ articleId }) => {
     const [article, setArticle] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [showLoginDialog, setShowLoginDialog] = useState(false)
-
-    const isLoggedIn = false
-
-    const handleLike = () => {
-        if (!isLoggedIn) {
-            setShowLoginDialog(true)
-            return 
-        }
-    }
-
-    const handleComment = () => {
-        if (!isLoggedIn) {
-            setShowLoginDialog(true)
-            return
-        }
-    } 
+    const [showLoginDialog, setShowLoginDialog] = useState(false);
+    const { isAuthenticated } = useAuth();
 
     const handleCopy = async () => {
         try {
@@ -116,13 +102,17 @@ const ArticleDetail = ({ articleId }) => {
                     </div>
                     <div className="-mx-[16px] 2xl:mt-[32px] 2xl:m-0">
                         <ArticleActions
-                            onLike={handleLike}
-                            onCopy={handleCopy}
                             articleId={article.id}
                             likes={article.likes_count}
+                            onCopy={handleCopy}
+                            onRequireLogin={() => setShowLoginDialog(true)}
                         />
                     </div>
-                    <ArticleCommentSection onClick={handleComment} />
+                    <ArticleCommentSection
+                        articleId={articleId}
+                        isAuthenticated={isAuthenticated}
+                        onRequireLogin={() => setShowLoginDialog(true)}
+                    />
                 </div>
 
                 {/* Desktop: AuthorCard อยู่ด้านขวา */}

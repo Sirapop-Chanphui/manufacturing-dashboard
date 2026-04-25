@@ -8,7 +8,7 @@ import {
 import Button from "../../common/Button"
 
 
-function PasswordChangeConfirmDialog({ open, onOpenChange, onConfirm }) {
+function PasswordChangeConfirmDialog({ open, onOpenChange, onConfirm, isSubmitting }) {
     return (
         <AlertDialog open={open} onOpenChange={onOpenChange}>
             <AlertDialogContent className="w-[477px] rounded-[16px] pt-[16px] px-[16px] pb-[40px] gap-[24px]">
@@ -27,8 +27,20 @@ function PasswordChangeConfirmDialog({ open, onOpenChange, onConfirm }) {
                     </AlertDialogTitle>
 
                     <div className="flex flex-row gap-4 mt-2">
-                        <Button buttonText="Cancel" buttonStyle="secondary" className="w-fit" onClick={() => onOpenChange(false)} />
-                        <Button buttonText="Reset" buttonStyle="primary" className="w-fit" onClick={onConfirm} />
+                        <Button
+                            buttonText="Cancel"
+                            buttonStyle="secondary"
+                            className="w-fit"
+                            onClick={() => onOpenChange(false)}
+                            disabled={isSubmitting}
+                        />
+                        <Button
+                            buttonText="Reset"
+                            buttonStyle="primary"
+                            className="w-fit"
+                            onClick={onConfirm}
+                            disabled={isSubmitting}
+                        />
                     </div>
 
 

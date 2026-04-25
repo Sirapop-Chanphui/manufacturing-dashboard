@@ -1,12 +1,22 @@
-import { UserRound } from 'lucide-react';
-import { RotateCw } from 'lucide-react';
-import man from "@/assets/img/men-and-cat.jpg"
+import { UserRound, RotateCw } from "lucide-react";
 import InputField from "@/components/common/InputField";
 import Button from "@/components/common/Button";
+import ProfileAvatar from "@/components/common/ProfileAvatar";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/authentication";
 
-function ResetPasswordDesktop({ values, onChange, onSubmit}) {
+function ResetPasswordDesktop({ values, onChange, onSubmit, errors, isSubmitting }) {
     const navigate = useNavigate();
+    const { user, state } = useAuth();
+
+    const avatarImageUrl =
+        user?.profile_pic && String(user.profile_pic).trim() !== ""
+            ? user.profile_pic
+            : null;
+    const displayName =
+        user?.name?.trim() ||
+        user?.username?.trim() ||
+        (state.getUserLoading ? "…" : "User");
 
     return (
         <div className="hidden 2xl:flex flex-col w-full h-screen pt-[132px]  bg-neutral-100  items-center">
@@ -14,16 +24,14 @@ function ResetPasswordDesktop({ values, onChange, onSubmit}) {
 
                 {/*Tag show your profile */}
                 <div className="flex flex-row items-center px-[16px] py-[24px] gap-[12px]">
-                    <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
-                        <img
-                            src={man}
-                            alt="avatar"
-                            className="w-full h-full object-cover"
-                        />
-                    </div>
+                    <ProfileAvatar
+                        imageUrl={avatarImageUrl}
+                        alt={`${displayName} profile picture`}
+                        size={40}
+                    />
 
                     <div className="flex flex-row items-center gap-[16px]">
-                        <span className="w-fit text-headline-4 text-neutral-400">Moodeng ja</span>
+                        <span className="w-fit text-headline-4 text-neutral-400">{displayName}</span>
                         <div className="flex h-[28px] w-px bg-neutral-300 "></div>
                         <span className="w-fit text-headline-4 text-neutral-600">Reset password</span>
                     </div>
@@ -59,6 +67,7 @@ function ResetPasswordDesktop({ values, onChange, onSubmit}) {
                                 placeholder="Current password"
                                 value={values.currentPassword}
                                 onChange={onChange}
+                                error={errors?.currentPassword}
                             />
 
                             <InputField
@@ -68,15 +77,17 @@ function ResetPasswordDesktop({ values, onChange, onSubmit}) {
                                 placeholder="New password"
                                 value={values.newPassword}
                                 onChange={onChange}
+                                error={errors?.newPassword}
                             />
 
                             <InputField
                                 label="Confirm new password"
-                                name="confirmPassword"
+                                name="confirmNewPassword"
                                 type="password"
                                 placeholder="Confirm new password"
-                                value={values.confirmPassword}
+                                value={values.confirmNewPassword}
                                 onChange={onChange}
+                                error={errors?.confirmNewPassword}
                             />
 
                             <Button
@@ -84,6 +95,7 @@ function ResetPasswordDesktop({ values, onChange, onSubmit}) {
                                 buttonText="Reset password"
                                 buttonStyle="primary"
                                 className="w-fit"
+                                disabled={isSubmitting}
                             />
                         </form>
                     </div>
